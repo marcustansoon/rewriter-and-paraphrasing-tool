@@ -10,6 +10,7 @@
   <button onclick="loadAd()">Load Ad</button>
 
   <script>
+	  alert('tt');
   function loadAd() {
 		if(window['webkit']){
 			window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'user': 'user'}));
