@@ -13,7 +13,7 @@
   function loadAd() {
 		if(window['webkit']){
 	  alert('tt');
-			window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'user': 'user'}));
+			window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'type': 'loadAdmob'}));
 			return;
 		}
   }
