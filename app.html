@@ -7,6 +7,7 @@
 <br><br><br><br>
 <h2>Test</h2>
   
+  <button onclick="initAd()">Init Ad</button>
   <button onclick="loadAd()">Load Ad</button>
   <button onclick="showAd()">Show Ad</button>
 
@@ -20,6 +21,12 @@
   function showAd() {
 		if(window['webkit']){
 			window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'type': 'showAdmob'}));
+			return;
+		}
+  }
+  function initAd() {
+		if(window['webkit']){
+			window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'type': 'initAdmob'}));
 			return;
 		}
   }
