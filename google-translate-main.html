@@ -42,8 +42,9 @@ Paraphrase:-
 	}
 	
 	window.onmessage = function(e) {
-		console.log(e.data);
 		e.data = JSON.parse(e.data);
+		
+		console.log(e.data);
 		
 		if(e.data.type === 'success') languagesOTG.shift();
 		
