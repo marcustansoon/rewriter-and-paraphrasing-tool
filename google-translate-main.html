@@ -44,6 +44,8 @@ Paraphrase:-
 	window.onmessage = function(e) {
 		let response = e.data;
 		
+		if(typeof response !== 'object') return;
+			
 		if(response.type === 'success') languagesOTG.shift();
 		
 		console.log(response);
