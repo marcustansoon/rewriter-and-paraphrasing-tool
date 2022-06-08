@@ -7,19 +7,23 @@
 		<div id="source">Criminology is the study of crime and criminal behavior, informed by principles of sociology and other non-legal fields, including psychology, economics, statistics, and anthropology. Criminologists examine a variety of related areas, including: Characteristics of people who commit crimes.</div>
 		<div id="google_translate_element"></div>
 		<script type="text/javascript">
-			let isGoogleTranslateReady,
-			    fromLang = 'en',
-			    toLang = 'ms';
+			let isGoogleTranslateReady;
 			
 			function googleTranslateReady() {
 				isGoogleTranslateReady = true;
 				console.log('ready');
 			}
 			
-			function googleTranslateElementInit() {
+			function googleTranslateElementInit(sourceLanguage, targetLanguage) {
+				if(!isGoogleTranslateReady) return;
+				
 				new google.translate.TranslateElement({
-					'pageLanguage': fromLang,
-				}, 'google_translate_element');	
+					'pageLanguage': sourceLanguage,
+				}, 'google_translate_element');
+				
+				let elem = document.querySelector('#google_translate_element select');
+				elem.value = targetLanguage;
+				elem.dispatchEvent(new Event('change'));
 			}
 			
 			function getButtonByInnerHTML(innerHTML) {
