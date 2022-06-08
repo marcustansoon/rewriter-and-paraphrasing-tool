@@ -15,7 +15,7 @@ Paraphrase:-
 		return ifrm;
 	}
 	
-	let languages = ['ms', 'ru', 'es', 'en'],
+	let languages = ['ms', 'ru', 'es'],
 	    prevLang,
 	    languagesOTG;
 	
@@ -27,14 +27,14 @@ Paraphrase:-
 	}
 	
 	function done(isInit){
-		let ifrm = prepareFrame('google-translate-embed.html', elem);
-		
 		if(!languagesOTG.length) return;
+		
+		let ifrm = prepareFrame('google-translate-embed.html', elem);
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
 			ifrm.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG[0]}, '*');
-			console.log({'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG[0]})
+			console.log({'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG.length === 1 ? 'en' : languagesOTG[0]})
 		}, true);
 		
 		prevLang = languagesOTG[0];
@@ -45,10 +45,10 @@ Paraphrase:-
 	window.onmessage = function(e) {
 		console.log(e.data);
 		
+		done();
+		
 		// Destroy iframe
 		elem.innerHTML = '';
-		
-		done();
 	};
 	
 	
