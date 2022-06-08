@@ -22,6 +22,7 @@
 			    alert(JSON.stringify(e.data));
 				
 				if(e.data.sourceLanguage && e.data.targetLanguage) {
+			    		alert(e.data.sourceText);
 					if(e.data.sourceText) document.getElementById('source').innerHTML = e.data.sourceText;
 					googleTranslateElementInit(e.data.sourceLanguage, e.data.targetLanguage);
 				}
