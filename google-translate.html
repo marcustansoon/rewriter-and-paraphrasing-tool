@@ -24,7 +24,7 @@
 			
 			function getButtonByInnerHTML(innerHTML) {
 				let buttons = [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML);
-				return buttons[0];
+				return buttons.length ? buttons[0] : null;
 			}
 			
 			function disableGoogleTranslateElement() {
