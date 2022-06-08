@@ -12,7 +12,7 @@
 		return ifrm;
 	}
 	
-	let languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl'],
+	let languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is'],
 		prevLang,
 		languagesOTG,
 		res;
@@ -28,7 +28,7 @@
 
 	function paraphrase() {
 		// Clone and shuffle array
-		languagesOTG = shuffleArray(languages).slice(-4);
+		languagesOTG = shuffleArray(languages)//.slice(-4);
 		
 		// Insert 'en' language at first and last index
 		languagesOTG.unshift('en');
