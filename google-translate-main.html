@@ -28,7 +28,7 @@
 
 	function paraphrase() {
 		// Clone and shuffle array
-		languagesOTG = shuffleArray(languages);
+		languagesOTG = shuffleArray(languages).slice(-4);
 		
 		// Insert 'en' language at first and last index
 		languagesOTG.unshift('en');
