@@ -71,11 +71,17 @@
 			function googleTranslateElementRun(sourceLanguage, targetLanguage) {
 				if (!isGoogleTranslateReady) return;
 				new google.translate.TranslateElement({
-					'pageLanguage': sourceLanguage,
+					'pageLanguage': sourceLanguage,	// Set source language
 				}, 'google_translate_element');
+				
+				// Get Google Translate input selector
 				let elem = document.querySelector('#google_translate_element select');
 				if(!elem) return;
+				
+				// Set target language
 				elem.value = targetLanguage;
+				
+				// Trigger translation
 				elem.dispatchEvent(new Event('change'));
 			}
 		</script>
