@@ -20,7 +20,7 @@
 				return;
 			    }
 			    
-				if(e.data.type === "run" && e.data.sourceLanguage && e.data.targetLanguage) {
+				if(e.data.sourceLanguage && e.data.targetLanguage) {
 					if(e.data.sourceText) document.getElementById('source').innerHTML = e.data.sourceText;
 					googleTranslateElementInit(e.data.sourceLanguage, e.data.targetLanguage);
 				}
