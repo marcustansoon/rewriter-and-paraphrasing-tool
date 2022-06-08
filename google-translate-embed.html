@@ -25,11 +25,12 @@
 					setTimeout(()=>
 						   checkTranslationCompletion({
 							'sourceText' : e.data.sourceText, 
+							'sourceElement' : document.getElementById('source'),
 							'errCallback' : function() {
-								alert('err');
+								window.top.postMessage(JSON.stringify({'type': 'failed'}), '*')
 						   	}, 
 							'callback' : function() {
-								alert('done');
+								window.top.postMessage(JSON.stringify({'type': 'success', 'result': document.getElementById('source').innerHTML}), '*')
 							}
 						})
 					, 500);
@@ -41,20 +42,25 @@
 			
 			
 			function checkTranslationCompletion(obj){
+				// Set counter value during first run
 				if(!obj.hasOwnProperty("counter")) obj.counter = 0;
 				
+				// Increment counter
 				obj.counter++;
 				
-				if(obj.sourceText !== document.getElementById('source').innerHTML) {
+				// Check for completion
+				if(obj.sourceText !== obj.sourceElement.innerHTML) {
 					obj.hasOwnProperty('callback') && obj.callback();
 					return;
 				}
 				
+				// Check for timeout translation
 				if(obj.counter > 10){
 					obj.hasOwnProperty('errCallback') && obj.errCallback();
 					return;
 				}
 				
+				// Run next check
 				setTimeout(() => checkTranslationCompletion(obj), 500);
 			}
 
