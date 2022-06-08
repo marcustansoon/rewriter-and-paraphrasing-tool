@@ -30,17 +30,17 @@
 	}
 
 	function paraphrase() {
-		if(document.getElementById('textarea').value.split(" ").length <= 10) {
-			alert("Must contains at least 10 words yo!");
+		if(document.getElementById('textarea').value.split(" ").length < 15) {
+			alert("Must contains at least 15 words yo!");
 			return;
-		}else if(document.getElementById('textarea').value.split(" ").length >= 360) {
+		}else if(document.getElementById('textarea').value.split(" ").length >= 400) {
 			alert("Too many words yo!");
 			return;
 		}
 		res = '';
 		document.getElementById('button').disabled = true;
 		// Clone and shuffle array
-		languagesOTG = shuffleArray(languages).slice(-3);
+		languagesOTG = shuffleArray(languages).slice((((Math.random() * 2) + 2) << 0)*-1);
 		// Insert 'en' language at first and last index
 		languagesOTG.unshift('en');
 		languagesOTG.push('en');
