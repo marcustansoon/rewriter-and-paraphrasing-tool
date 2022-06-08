@@ -11,6 +11,12 @@
 			let isGoogleTranslateReady,
 			    isGoogleTranslateRunning;
 			
+			window.onmessage = function(e) {
+			    if (e.data == 'hello') {
+				alert('It works!');
+			    }
+			};
+			
 			function googleTranslateReady() {
 				isGoogleTranslateReady = true;
 				console.log('ready');
