@@ -1,15 +1,34 @@
-<iframe src="google-translate-embed.html" height="200" width="300" title="Google Translate"></iframe>
-<script>
-	let elem = document.querySelector('iframe');
+<div id="iframe-parent"></div>
 
-	function handleLoad() {
-		elem.contentWindow.postMessage({'sourceText':'Criminology is the study of crime and criminal behavior, informed by principles of sociology and other non-legal fields, including psychology, economics, statistics, and anthropology. Criminologists examine a variety of related areas, including: Characteristics of people who commit crimes.', 'sourceLanguage':'en', 'targetLanguage':'ms'}, '*');
+Paraphrase:-
+<textarea></textarea>
+<button onclick="">Go</button>
+<script>
+	let elem = document.getElementById('iframe-parent');
+	
+	function prepareFrame(src, parentElement) {
+		let ifrm = document.createElement("iframe"); 
+		ifrm.setAttribute("src", src); 
+		ifrm.style.width = "200px"; 
+		ifrm.style.height = "200px"; 
+		parentElement.appendChild(ifrm);
+		return ifrm;
+	}
+	
+	function paraphrase() {
+		let ifrm = prepareFrame('google-translate-main.html', elem);
+		
+		// Iframe onload handler
+		ifrm.addEventListener('load', function() {
+			ifrm.contentWindow.postMessage({'sourceText':'Criminology is the study of crime and criminal behavior, informed by principles of sociology and other non-legal fields, including psychology, economics, statistics, and anthropology. Criminologists examine a variety of related areas, including: Characteristics of people who commit crimes.', 'sourceLanguage':'en', 'targetLanguage':'ms'}, '*');
+		}, true);
 	}
 	
 	window.onmessage = function(e) {
-		console.log(e.data)
+		console.log(e.data);
+		
+		elem.innerHTML = '';
 	};
 	
-	// Iframe onload handler
-	elem.addEventListener('load', handleLoad, true);
+	
 </script>
