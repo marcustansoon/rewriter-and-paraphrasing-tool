@@ -1,1 +1,10 @@
-<iframe src="google-translate.html" height="200" width="300" title="Google Translate"></iframe>
+<iframe src="google-translate-embed.html" height="200" width="300" title="Google Translate"></iframe>
+<script>
+  let elem = document.querySelector('iframe');
+  
+  function handleLoad(){
+    elem.contentWindow.postMessage('hello', '*');
+  }
+  
+  elem.addEventListener('load', handleLoad, true);
+</script>
