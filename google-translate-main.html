@@ -16,7 +16,7 @@ Paraphrase:-
 	}
 	
 	function paraphrase() {
-		let ifrm = prepareFrame('google-translate-main.html', elem);
+		let ifrm = prepareFrame('google-translate-embed.html', elem);
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
@@ -27,6 +27,7 @@ Paraphrase:-
 	window.onmessage = function(e) {
 		console.log(e.data);
 		
+		// Destroy
 		elem.innerHTML = '';
 	};
 	
