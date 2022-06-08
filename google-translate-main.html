@@ -23,10 +23,11 @@ Paraphrase:-
 		// Clone array
 		languagesOTG = languages.slice(0);
 		
-		done();
+		// Start translation
+		nextTranslation();
 	}
 	
-	function done(){
+	function nextTranslation(){
 		// Destroy iframe
 		elem.innerHTML = '';
 		
@@ -42,11 +43,9 @@ Paraphrase:-
 	}
 	window.onmessage = function(e) {
 		let response = JSON.parse(e.data);
-		console.log(response);
-		console.log(typeof response);
 		
 		if(response.type === 'success') languagesOTG.shift();
-		console.log(languagesOTG);
-		done();
+		
+		nextTranslation();
 	};
 </script>
