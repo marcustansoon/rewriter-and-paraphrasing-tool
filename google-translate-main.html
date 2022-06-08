@@ -23,12 +23,14 @@ Paraphrase:-
 		// Clone array
 		languagesOTG = languages.slice(0);
 		
-		done(true);
+		done();
 	}
 	
-	function done(isInit){
+	function done(){
 		// Destroy iframe
 		elem.innerHTML = '';
+		
+		if(languagesOTG.length === 1 || !languagesOTG.length) return;
 		
 		let ifrm = prepareFrame('google-translate-embed.html', elem);
 		
@@ -37,14 +39,14 @@ Paraphrase:-
 			ifrm.contentWindow.postMessage({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1], 'sourceText': document.getElementById('textarea').value}, '*');
 			console.log({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1]})
 		}, true);
-		
-		if(languagesOTG.length === 2) return;
-		
-		languagesOTG.shift();
 	}
 	
 	window.onmessage = function(e) {
 		console.log(e.data);
+		e.data = JSON.parse(e.data);
+		
+		if(e.data.type === 'success') languagesOTG.shift();
+		
 		done();
 	};
 </script>
