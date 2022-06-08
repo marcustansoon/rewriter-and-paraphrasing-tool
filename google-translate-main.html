@@ -30,6 +30,7 @@
 	}
 
 	function paraphrase() {
+		document.getElementById('button').disabled = true;
 		// Clone and shuffle array
 		languagesOTG = shuffleArray(languages).slice(-3);
 		// Insert 'en' language at first and last index
@@ -42,8 +43,10 @@
 	function nextTranslation() {
 		// Destroy iframe
 		elem.innerHTML = '';
+		// Done
 		if (languagesOTG.length === 1 || !languagesOTG.length) {
 			document.getElementById('result').value = res.result;
+			document.getElementById('button').disabled = false;
 			return;
 		}
 		let ifrm = prepareFrame('google-translate-embed.html', elem);
