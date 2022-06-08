@@ -50,7 +50,7 @@ Paraphrase:-
 		let ifrm4 = prepareFrame('google-translate-embed.html', elem);
 		// Iframe onload handler
 		ifrm4.addEventListener('load', function() {
-			ifrm3.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ln'}, '*');
+			ifrm4.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ln'}, '*');
 			//console.log({'sourceLanguage': 'en', 'targetLanguage': 'ln'})
 		}, true);
 		
