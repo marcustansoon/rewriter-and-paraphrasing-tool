@@ -21,6 +21,11 @@
 					'pageLanguage': fromLang,
 				}, 'google_translate_element');	
 			}
+			
+			function getButtonByInnerHTML(innerHTML) {
+				let buttons = [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML);
+				return buttons[0];
+			}
 		</script>
 		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateReady"></script>
 	</body>
