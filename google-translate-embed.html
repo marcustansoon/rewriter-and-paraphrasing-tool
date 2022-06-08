@@ -40,12 +40,12 @@
 									}
 									return elem.innerHTML
 								}
-								window.top.postMessage(JSON.stringify({
+								window.top.postMessage({
 									'type': 'success', 
 									'result': getInnerHTML(document.getElementById('source')),
 									'sourceLanguage': e.data.sourceLanguage,
 									'targetLanguage': e.data.targetLanguage,
-								}), '*')
+								}, '*')
 							}
 						})
 					, 250);
