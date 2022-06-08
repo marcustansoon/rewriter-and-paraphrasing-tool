@@ -75,8 +75,8 @@
 					return;
 				}
 				
-				// Check for timeout translation (3 seconds timeout)
-				if(obj.counter > 12){
+				// Check for timeout translation (2 seconds timeout)
+				if(obj.counter > 8){
 					obj.hasOwnProperty('errCallback') && obj.errCallback();
 					return;
 				}
