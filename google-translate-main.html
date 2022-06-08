@@ -42,7 +42,7 @@ Paraphrase:-
 		}, true);
 	}
 	window.onmessage = function(e) {
-		let response = JSON.parse(e.data);
+		let response = e.data;
 		
 		if(response.type === 'success') languagesOTG.shift();
 		
