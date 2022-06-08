@@ -15,20 +15,40 @@ Paraphrase:-
 		return ifrm;
 	}
 	
+	let languages = ['ms', 'ru', 'es', 'en'],
+	    prevLang,
+	    languagesOTG;
+	
 	function paraphrase() {
+		// Clone array
+		languagesOTG = languages.slice(0);
+		
+		done(true);
+	}
+	
+	function done(isInit){
 		let ifrm = prepareFrame('google-translate-embed.html', elem);
+		
+		if(!languagesOTG.length) return;
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
-			ifrm.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ms'}, '*');
+			ifrm.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG[0]}, '*');
+			console.log({'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG[0]})
 		}, true);
+		
+		prevLang = languagesOTG[0];
+		
+		languagesOTG.shift();
 	}
 	
 	window.onmessage = function(e) {
 		console.log(e.data);
 		
-		// Destroy
+		// Destroy iframe
 		elem.innerHTML = '';
+		
+		done();
 	};
 	
 	
