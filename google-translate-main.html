@@ -23,7 +23,35 @@ Paraphrase:-
 		// Clone array
 		languagesOTG = languages.slice(0);
 		
-		done(true);
+		
+		let ifrm = prepareFrame('google-translate-embed.html', elem);
+		
+		// Iframe onload handler
+		ifrm.addEventListener('load', function() {
+			ifrm.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ru'}, '*');
+			console.log({'sourceLanguage': 'en', 'targetLanguage': 'ru'})
+		}, true);
+		
+		let ifrm2 = prepareFrame('google-translate-embed.html', elem);
+		// Iframe onload handler
+		ifrm2.addEventListener('load', function() {
+			ifrm2.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ms'}, '*');
+			console.log({'sourceLanguage': 'en', 'targetLanguage': 'ms'})
+		}, true
+		
+		let ifrm3 = prepareFrame('google-translate-embed.html', elem);
+		// Iframe onload handler
+		ifrm3.addEventListener('load', function() {
+			ifrm3.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'es'}, '*');
+			console.log({'sourceLanguage': 'en', 'targetLanguage': 'es'})
+		}, true
+		
+		
+		
+		
+		
+		
+		//done(true);
 	}
 	
 	function done(isInit){
@@ -49,6 +77,4 @@ Paraphrase:-
 		console.log(e.data);
 		done();
 	};
-	
-	
 </script>
