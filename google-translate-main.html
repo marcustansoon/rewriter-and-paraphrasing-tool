@@ -27,6 +27,9 @@ Paraphrase:-
 	}
 	
 	function done(isInit){
+		// Destroy iframe
+		elem.innerHTML = '';
+		
 		if(!languagesOTG.length) return;
 		
 		let ifrm = prepareFrame('google-translate-embed.html', elem);
@@ -44,11 +47,7 @@ Paraphrase:-
 	
 	window.onmessage = function(e) {
 		console.log(e.data);
-		
 		done();
-		
-		// Destroy iframe
-		elem.innerHTML = '';
 	};
 	
 	
