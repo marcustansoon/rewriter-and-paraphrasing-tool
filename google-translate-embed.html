@@ -75,8 +75,8 @@
 					return;
 				}
 				
-				// Check for timeout translation (5 seconds timeout)
-				if(obj.counter > 20){
+				// Check for timeout translation (3 seconds timeout)
+				if(obj.counter > 12){
 					obj.hasOwnProperty('errCallback') && obj.errCallback();
 					return;
 				}
@@ -102,8 +102,8 @@
 				    interval = setInterval(()=>{
 					checkSelectorCounter++;
 					    
-					// 3 seconds timeout for Input Selector detection
-					if(checkSelectorCounter >= 12) {
+					// 2 seconds timeout for Input Selector detection
+					if(checkSelectorCounter >= 8) {
 						clearInterval(interval);
 						return;
 					}
