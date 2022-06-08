@@ -28,7 +28,7 @@
 			}
 			
 			function getButtonByInnerHTML(innerHTML) {
-				return [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML || e.id.includes('innerHTML'));
+				return [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML || e.id.includes(innerHTML));
 			}
 			
 			function disableGoogleTranslateElement() {
