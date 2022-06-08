@@ -17,7 +17,8 @@ Paraphrase:-
 	
 	let languages = ['en', 'ms', 'ln', 'tl', 'mi', 'en'], //'ru', 'es', 'en'],
 	    prevLang,
-	    languagesOTG;
+	    languagesOTG,
+	    res;
 	
 	function paraphrase() {
 		// Clone array
@@ -27,7 +28,7 @@ Paraphrase:-
 		nextTranslation();
 	}
 	
-	function nextTranslation(response){
+	function nextTranslation(){
 		// Destroy iframe
 		elem.innerHTML = '';
 		
@@ -37,19 +38,21 @@ Paraphrase:-
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
-			ifrm.contentWindow.postMessage({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1], 'sourceText': response ? response.result : document.getElementById('textarea').value}, '*');
+			ifrm.contentWindow.postMessage({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1], 'sourceText': res ? res.result : document.getElementById('textarea').value}, '*');
 			//console.log({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1]})
 		}, true);
 	}
+	
 	window.onmessage = function(e) {
-		let response = e.data;
-		
-		if(typeof response !== 'object') return;
+		if(typeof e.data !== 'object') return;
 			
-		if(response.type === 'success') languagesOTG.shift();
+		if(e.data.type === 'success') {
+			languagesOTG.shift();
+			res = e.data;
+		}
 		
-		console.log(response);
+		console.log(e.data);
 		
-		nextTranslation(response);
+		nextTranslation();
 	};
 </script>
