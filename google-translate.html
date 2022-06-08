@@ -13,7 +13,7 @@
 			
 			function googleTranslateReady() {
 				isGoogleTranslateReady = true;
-				console.log('ready'):
+				console.log('ready');
 			}
 			
 			function googleTranslateElementInit() {
@@ -25,6 +25,12 @@
 			function getButtonByInnerHTML(innerHTML) {
 				let buttons = [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML);
 				return buttons[0];
+			}
+			
+			function disableGoogleTranslateElement() {
+				let button;
+				(button = getButtonByInnerHTML('close')) && button.click();
+				document.getElementById('google_translate_element').innerHTML = '';
 			}
 		</script>
 		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateReady"></script>
