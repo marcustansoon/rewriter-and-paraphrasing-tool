@@ -28,12 +28,12 @@
 			}
 			
 			function getButtonByInnerHTML(innerHTML) {
-				return [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML);
+				return [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML || e.id.includes('innerHTML'));
 			}
 			
 			function disableGoogleTranslateElement() {
 				let button;
-				(button = getButtonByInnerHTML('close')) && button.click();
+				(button = getButtonByInnerHTML('cancel')) && button.click();
 				document.getElementById('google_translate_element').innerHTML = '';
 			}
 		</script>
