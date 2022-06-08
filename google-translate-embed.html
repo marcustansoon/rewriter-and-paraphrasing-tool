@@ -64,14 +64,14 @@
 					return;
 				}
 				
-				// Check for timeout translation
-				if(obj.counter > 10){
+				// Check for timeout translation (5 seconds timeout)
+				if(obj.counter > 20){
 					obj.hasOwnProperty('errCallback') && obj.errCallback();
 					return;
 				}
 				
 				// Run next check
-				setTimeout(() => checkTranslationCompletion(obj), 500);
+				setTimeout(() => checkTranslationCompletion(obj), 250);
 			}
 
 			function googleTranslateReady() {
@@ -85,18 +85,21 @@
 					'pageLanguage': sourceLanguage,	// Set source language
 				}, 'google_translate_element');
 				
-				//setTimeout(()=>{
+				let interval = setInterval(()=>{
 					// Get Google Translate input selector
-					let elem = document.querySelector('#google_translate_element select');
-				console.log(elem)	
-				if(!elem) return;
+					let elem = document.querySelector('#google_translate_element select');	
+					if(!elem) return;
 
 					// Set target language
 					elem.value = targetLanguage;
 
 					// Trigger translation
 					elem.dispatchEvent(new Event('change'));
-				//}, 500);
+					
+					console.log('run')
+					
+					clearInterval(interval);
+				}, 100);
 			}
 		</script>
 		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateReady"></script>
