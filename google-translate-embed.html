@@ -8,56 +8,69 @@
 		<div id="source">Criminology is the study of crime and criminal behavior, informed by principles of sociology and other non-legal fields, including psychology, economics, statistics, and anthropology. Criminologists examine a variety of related areas, including: Characteristics of people who commit crimes.</div>
 		<div id="google_translate_element"></div>
 		<script type="text/javascript">
-			let isGoogleTranslateReady,
-			    isGoogleTranslateRunning;
+			let isGoogleTranslateReady;
 			
 			window.onmessage = function(e) {
-			    try {
-				if(!e || !e.data) throw 'Invalid message received!';
-			    } catch(e) {
-				alert(e);
-				return;
-			    }
-			    alert(e.data);
-			    alert(typeof e.data);
+				try {
+					if (!e || !e.data) throw 'Invalid message received!';
+				} catch (e) {
+					alert(e);
+					return;
+				}
+				if (typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage && e.data.sourceText) {
+					// Set source text
+					document.getElementById('source').innerHTML = e.data.sourceText;
+					
+					// Check for completion
+					setTimeout(()=>
+						   checkTranslationCompletion({
+							'sourceText' : e.data.sourceText, 
+							'errCallback' : function() {
+								alert('err');
+						   	}, 
+							'callback' : function() {
+								alert('done');
+							}
+						})
+					, 500);
 				
-				if(typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage) {
-			    		alert(e.data.sourceText);
-					if(e.data.sourceText) document.getElementById('source').innerHTML = e.data.sourceText;
+					// Run Google Translate
 					googleTranslateElementInit(e.data.sourceLanguage, e.data.targetLanguage);
 				}
 			};
 			
+			
+			function checkTranslationCompletion(obj){
+				if(!obj.hasOwnProperty("counter")) obj.counter = 0;
+				
+				obj.counter++;
+				
+				if(obj.sourceText !== document.getElementById('source').innerHTML) {
+					obj.hasOwnProperty('callback') && obj.callback();
+					return;
+				}
+				
+				if(completionCheckCounter > 10){
+					obj.hasOwnProperty('errCallback') && obj.errCallback();
+					return;
+				}
+				
+				setTimeout(() => checkTranslationCompletion(obj), 500);
+			}
+
 			function googleTranslateReady() {
 				isGoogleTranslateReady = true;
-				console.log('ready');
 			}
-			
-			function googleTranslateElementInit(sourceLanguage, targetLanguage) {
-				if(!isGoogleTranslateReady || isGoogleTranslateRunning) return;
-				
-				isGoogleTranslateRunning = true;
-				
+
+			function googleTranslateElementRun(sourceLanguage, targetLanguage) {
+				if (!isGoogleTranslateReady) return;
 				new google.translate.TranslateElement({
 					'pageLanguage': sourceLanguage,
 				}, 'google_translate_element');
-				
 				let elem = document.querySelector('#google_translate_element select');
+				if(!elem) return;
 				elem.value = targetLanguage;
 				elem.dispatchEvent(new Event('change'));
-			}
-			
-			// NOT IN USE
-			function getButtonByInnerHTML(innerHTML) {
-				return [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML || e.id.includes(innerHTML));
-			}
-			
-			// NOT IN USE
-			function disableGoogleTranslateElement() {
-				let button;
-				(button = getButtonByInnerHTML('cancel')) && button.click();
-				document.getElementById('google_translate_element').innerHTML = '';
-				isGoogleTranslateRunning = false;
 			}
 		</script>
 		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateReady"></script>
