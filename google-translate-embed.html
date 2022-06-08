@@ -27,7 +27,11 @@
 							'sourceText' : e.data.sourceText, 
 							'sourceElement' : document.getElementById('source'),
 							'errCallback' : function() {
-								window.top.postMessage(JSON.stringify({'type': 'failed'}), '*')
+								window.top.postMessage({
+									'type': 'failed',
+									'sourceLanguage': e.data.sourceLanguage,
+									'targetLanguage': e.data.targetLanguage,
+								}, '*')
 						   	}, 
 							'callback' : function() {
 								function getInnerHTML(elem){
