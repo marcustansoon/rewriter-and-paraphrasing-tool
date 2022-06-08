@@ -30,6 +30,13 @@
 	}
 
 	function paraphrase() {
+		if(document.getElementById('textarea').value.split(" ").length <= 10) {
+			alert("Must contains at least 10 words yo!");
+			return;
+		}else if(document.getElementById('textarea').value.split(" ").length >= 600) {
+			alert("Too many words yo!");
+			return;
+		}
 		document.getElementById('button').disabled = true;
 		// Clone and shuffle array
 		languagesOTG = shuffleArray(languages).slice(-3);
