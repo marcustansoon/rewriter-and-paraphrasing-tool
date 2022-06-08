@@ -92,12 +92,15 @@
 				
 				new google.translate.TranslateElement({
 					'pageLanguage': sourceLanguage,	// Set source language
+					'includedLanguages': 'en,ja,ko,ms,ln,tl,mi',
 				}, 'google_translate_element');
 				
 				// Wait for Google Translate selector to be appended
 				let interval = setInterval(()=>{
 					// Get Google Translate input selector
 					let elem = document.querySelector('#google_translate_element select');	
+					
+					// Make sure element exists
 					if(!elem) return;
 console.log(elem);
 					// Set target language
