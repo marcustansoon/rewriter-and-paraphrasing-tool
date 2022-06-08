@@ -3,7 +3,7 @@
 <textarea id='textarea' rows="12" cols="80%"></textarea>
 <h3>Result:-</h3>
 <textarea id='result' rows="12" cols="80%"></textarea>
-<button onclick="paraphrase()">Go</button>
+<button onclick="paraphrase()" id="button">Go</button>
 <script>
 	let elem = document.getElementById('iframe-parent');
 
@@ -31,7 +31,7 @@
 
 	function paraphrase() {
 		// Clone and shuffle array
-		languagesOTG = shuffleArray(languages).slice(-4);
+		languagesOTG = shuffleArray(languages).slice(-3);
 		// Insert 'en' language at first and last index
 		languagesOTG.unshift('en');
 		languagesOTG.push('en');
