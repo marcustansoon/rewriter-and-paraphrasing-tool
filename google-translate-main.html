@@ -1,7 +1,7 @@
 <div id="iframe-parent"></div>
 
 Paraphrase:-
-<textarea></textarea>
+<textarea id='textarea'></textarea>
 <button onclick="paraphrase()">Go</button>
 <script>
 	let elem = document.getElementById('iframe-parent');
@@ -20,7 +20,7 @@ Paraphrase:-
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
-			ifrm.contentWindow.postMessage({'sourceText':'Criminology is the study of crime and criminal behavior, informed by principles of sociology and other non-legal fields, including psychology, economics, statistics, and anthropology. Criminologists examine a variety of related areas, including: Characteristics of people who commit crimes.', 'sourceLanguage':'en', 'targetLanguage':'ms'}, '*');
+			ifrm.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ms'}, '*');
 		}, true);
 	}
 	
