@@ -1,58 +1,67 @@
-<div id="iframe-parent"></div>
-
-Paraphrase:-
-<textarea id='textarea'></textarea>
+<div id="iframe-parent"></div> Paraphrase:- <textarea id='textarea'></textarea>
 <button onclick="paraphrase()">Go</button>
 <script>
 	let elem = document.getElementById('iframe-parent');
-	
+
 	function prepareFrame(src, parentElement) {
-		let ifrm = document.createElement("iframe"); 
-		ifrm.setAttribute("src", src); 
-		ifrm.style.width = "200px"; 
-		ifrm.style.height = "200px"; 
+		let ifrm = document.createElement("iframe");
+		ifrm.setAttribute("src", src);
+		ifrm.style.width = "200px";
+		ifrm.style.height = "200px";
 		parentElement.appendChild(ifrm);
 		return ifrm;
 	}
 	
-	let languages = ['en', 'ms', 'sn', 'mi', 'en'],
-	    prevLang,
-	    languagesOTG,
-	    res;
+	let languages = ['ms', 'sn', 'mi', 'ro'],
+		prevLang,
+		languagesOTG,
+		res;
 	
+	function shuffleArray(array) {
+		let newArr = arr.slice() for (let i = newArr.length - 1; i > 0; i--) {
+			const rand = Math.floor(Math.random() * (i + 1));
+			[newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
+		}
+		return newArr;
+	}
+
 	function paraphrase() {
-		// Clone array
-		languagesOTG = languages.slice(0);
+		// Clone and shuffle array
+		languagesOTG = shuffleArray(languages.slice(0));
 		
+		// Insert 'en' language at first and last index
+		languagesOTG.unshift('en');
+		languagesOTG.push('en');
+			
 		// Start translation
 		nextTranslation();
 	}
-	
-	function nextTranslation(){
+
+	function nextTranslation() {
 		// Destroy iframe
 		elem.innerHTML = '';
-		
-		if(languagesOTG.length === 1 || !languagesOTG.length) return;
-		
+		if (languagesOTG.length === 1 || !languagesOTG.length) return;
 		let ifrm = prepareFrame('google-translate-embed.html', elem);
-		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
-			ifrm.contentWindow.postMessage({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1], 'sourceText': res ? res.result : document.getElementById('textarea').value}, '*');
-			console.log({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1]})
+			ifrm.contentWindow.postMessage({
+				'sourceLanguage': languagesOTG[0],
+				'targetLanguage': languagesOTG[1],
+				'sourceText': res ? res.result : document.getElementById('textarea').value
+			}, '*');
+			console.log({
+				'sourceLanguage': languagesOTG[0],
+				'targetLanguage': languagesOTG[1]
+			})
 		}, true);
 	}
-	
 	window.onmessage = function(e) {
-		if(typeof e.data !== 'object') return;
-			
-		if(e.data.type === 'success') {
+		if (typeof e.data !== 'object') return;
+		if (e.data.type === 'success') {
 			languagesOTG.shift();
 			res = e.data;
 		}
-		
 		console.log(e.data);
-		
 		nextTranslation();
 	};
 </script>
