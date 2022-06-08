@@ -88,15 +88,15 @@
 			function googleTranslateReady() {
 				isGoogleTranslateReady = true;
 			}
-
+let x;
 			function googleTranslateElementRun(sourceLanguage, targetLanguage) {
 				if (!isGoogleTranslateReady) return;
 				
-				new google.translate.TranslateElement({
+				x = new google.translate.TranslateElement({
 					'pageLanguage': sourceLanguage,	// Set source language
-					'includedLanguages': 'en,' + targetLanguage,
+					'includedLanguages': 'en,ru,ms',
 				}, 'google_translate_element');
-				
+				return;
 				// Wait for Google Translate selector to be appended
 				let checkSelectorCounter = 0, 
 				    interval = setInterval(()=>{
