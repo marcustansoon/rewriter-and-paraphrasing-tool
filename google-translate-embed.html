@@ -12,9 +12,18 @@
 			    isGoogleTranslateRunning;
 			
 			window.onmessage = function(e) {
-			    if (e.data == 'hello') {
-				alert('It works!');
+			    try {
+				if(!e || !e.data) throw 'Invalid message received!';
+				e.data = JSON.parse(e.data);
+			    } catch(e) {
+				alert(e); // error in the above string (in this case, yes)!
+				return;
 			    }
+			    
+				if(e.data.type === "run" && e.data.sourceLanguage && e.data.targetLanguage) {
+					if(e.data.sourceText) document.getElementById('source').innerHTML = e.data.sourceText;
+					googleTranslateElementInit(e.data.sourceLanguage, e.data.targetLanguage);
+				}
 			};
 			
 			function googleTranslateReady() {
@@ -36,10 +45,12 @@
 				elem.dispatchEvent(new Event('change'));
 			}
 			
+			// NOT IN USE
 			function getButtonByInnerHTML(innerHTML) {
 				return [...document.querySelectorAll('button')].find(e => e.innerHTML === innerHTML || e.id.includes(innerHTML));
 			}
 			
+			// NOT IN USE
 			function disableGoogleTranslateElement() {
 				let button;
 				(button = getButtonByInnerHTML('cancel')) && button.click();
