@@ -3,7 +3,7 @@
   let elem = document.querySelector('iframe');
   
   function handleLoad(){
-    elem.contentWindow.postMessage('hello', '*');
+    //elem.contentWindow.postMessage('hello', '*');
   }
   
   elem.addEventListener('load', handleLoad, true);
