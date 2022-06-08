@@ -17,6 +17,8 @@
 					alert(e);
 					return;
 				}
+				console.log('Received');
+				console.log(e.data);
 				if (typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage && e.data.sourceText) {
 					// Set source text
 					document.getElementById('source').innerHTML = e.data.sourceText;
