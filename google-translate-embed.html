@@ -30,7 +30,17 @@
 								window.top.postMessage(JSON.stringify({'type': 'failed'}), '*')
 						   	}, 
 							'callback' : function() {
-								window.top.postMessage(JSON.stringify({'type': 'success', 'result': document.getElementById('source').innerHTML}), '*')
+								function getInnerHTML(elem){
+									let appendString = '';
+									if(elem.childElementCount){
+										[...elem.children].forEach(e => {
+											appendString += getInnerHTML(e);
+										});
+										return appendString
+									}
+									return elem.innerHTML
+								}
+								window.top.postMessage(JSON.stringify({'type': 'success', 'result': getInnerHTML(document.getElementById('source'))}), '*')
 							}
 						})
 					, 500);
