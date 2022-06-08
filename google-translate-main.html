@@ -37,14 +37,14 @@ Paraphrase:-
 		ifrm2.addEventListener('load', function() {
 			ifrm2.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'ms'}, '*');
 			console.log({'sourceLanguage': 'en', 'targetLanguage': 'ms'})
-		}, true
+		}, true);
 		
 		let ifrm3 = prepareFrame('google-translate-embed.html', elem);
 		// Iframe onload handler
 		ifrm3.addEventListener('load', function() {
 			ifrm3.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': 'en', 'targetLanguage': 'es'}, '*');
 			console.log({'sourceLanguage': 'en', 'targetLanguage': 'es'})
-		}, true
+		}, true);
 		
 		
 		
