@@ -17,8 +17,8 @@
 					alert(e);
 					return;
 				}
-				console.log('Received');
-				console.log(e.data);
+				//console.log('Received');
+				//console.log(e.data);
 				if (typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage && e.data.sourceText) {
 					// Set source text
 					document.getElementById('source').innerHTML = e.data.sourceText;
@@ -98,20 +98,29 @@
 				}, 'google_translate_element');
 				
 				// Wait for Google Translate selector to be appended
-				let interval = setInterval(()=>{
+				let checkSelectorCounter = 0, 
+				    interval = setInterval(()=>{
+					checkSelectorCounter++;
+					    
+					// 3 seconds timeout for Input Selector detection
+					if(checkSelectorCounter >= 12) {
+						clearInterval(interval);
+						return;
+					}
+					    
 					// Get Google Translate input selector
 					let elem = document.querySelector('#google_translate_element select');	
 					
 					// Make sure element exists
 					if(!elem) return;
-console.log(elem);
+					   
 					// Set target language
 					elem.value = targetLanguage;
 
 					// Trigger translation
 					elem.dispatchEvent(new Event('change'));
 					
-					console.log('run')
+					//console.log('run')
 					
 					clearInterval(interval);
 				}, 250);
