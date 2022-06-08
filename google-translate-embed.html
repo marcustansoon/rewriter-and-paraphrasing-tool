@@ -85,6 +85,7 @@
 					'pageLanguage': sourceLanguage,	// Set source language
 				}, 'google_translate_element');
 				
+				// Wait for Google Translate selector to be appended
 				let interval = setInterval(()=>{
 					// Get Google Translate input selector
 					let elem = document.querySelector('#google_translate_element select');	
