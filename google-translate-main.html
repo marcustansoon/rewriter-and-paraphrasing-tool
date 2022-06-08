@@ -36,7 +36,7 @@ Paraphrase:-
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
-			ifrm.contentWindow.postMessage({'sourceText': document.getElementById('textarea').value, 'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG[0]}, '*');
+			ifrm.contentWindow.postMessage({'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG.length === 1 ? 'en' : languagesOTG[0]}, '*');
 			console.log({'sourceLanguage': isInit ? 'en' : prevLang, 'targetLanguage': languagesOTG.length === 1 ? 'en' : languagesOTG[0]})
 		}, true);
 		
