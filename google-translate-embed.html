@@ -35,7 +35,7 @@
 					, 500);
 				
 					// Run Google Translate
-					googleTranslateElementInit(e.data.sourceLanguage, e.data.targetLanguage);
+					googleTranslateElementRun(e.data.sourceLanguage, e.data.targetLanguage);
 				}
 			};
 			
@@ -50,7 +50,7 @@
 					return;
 				}
 				
-				if(completionCheckCounter > 10){
+				if(obj.counter > 10){
 					obj.hasOwnProperty('errCallback') && obj.errCallback();
 					return;
 				}
