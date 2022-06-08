@@ -27,7 +27,7 @@ Paraphrase:-
 		nextTranslation();
 	}
 	
-	function nextTranslation(){
+	function nextTranslation(response){
 		// Destroy iframe
 		elem.innerHTML = '';
 		
@@ -37,7 +37,7 @@ Paraphrase:-
 		
 		// Iframe onload handler
 		ifrm.addEventListener('load', function() {
-			ifrm.contentWindow.postMessage({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1], 'sourceText': document.getElementById('textarea').value}, '*');
+			ifrm.contentWindow.postMessage({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1], 'sourceText': response ? response.result : document.getElementById('textarea').value}, '*');
 			//console.log({'sourceLanguage': languagesOTG[0], 'targetLanguage': languagesOTG[1]})
 		}, true);
 	}
@@ -50,6 +50,6 @@ Paraphrase:-
 		
 		console.log(response);
 		
-		nextTranslation();
+		nextTranslation(response);
 	};
 </script>
