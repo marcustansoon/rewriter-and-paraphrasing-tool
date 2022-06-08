@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+	</head>
+	<body>
+		<div id="source"></div>
+		<div id="google_translate_element"></div>
+		<script type="text/javascript">
+			let isGoogleTranslateReady;
+			
+			window.onmessage = function(e) {
+				try {
+					if (!e || !e.data) throw 'Invalid message received!';
+				} catch (e) {
+					alert(e);
+					return;
+				}
+				//console.log('Received');
+				//console.log(e.data);
+				if (typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage && e.data.sourceText) {
+					// Set source text
+					document.getElementById('source').innerHTML = e.data.sourceText;
+					
+					// Check for completion
+					setTimeout(()=>
+						   checkTranslationCompletion({
+							'sourceText' : e.data.sourceText, 
+							'sourceElement' : document.getElementById('source'),
+							'errCallback' : function() {
+								window.top.postMessage({
+									'type': 'failed',
+									'sourceLanguage': e.data.sourceLanguage,
+									'targetLanguage': e.data.targetLanguage,
+								}, '*')
+						   	}, 
+							'callback' : function() {
+								function getInnerHTML(elem){
+									let appendString = '';
+									if(elem.childElementCount){
+										[...elem.children].forEach(e => {
+											appendString += getInnerHTML(e);
+										});
+										return appendString
+									}
+									return elem.innerHTML
+								}
+								window.top.postMessage({
+									'type': 'success', 
+									'result': getInnerHTML(document.getElementById('source')),
+									'sourceLanguage': e.data.sourceLanguage,
+									'targetLanguage': e.data.targetLanguage,
+								}, '*')
+							}
+						})
+					, 250);
+				
+					// Run Google Translate
+					googleTranslateElementRun(e.data.sourceLanguage, e.data.targetLanguage);
+				}
+			};
+			
+			
+			function checkTranslationCompletion(obj){
+				// Set counter value during first run
+				if(!obj.hasOwnProperty("counter")) obj.counter = 0;
+				
+				// Increment counter
+				obj.counter++;
+				
+				// Check for completion
+				if(obj.sourceText !== obj.sourceElement.innerHTML) {
+					obj.hasOwnProperty('callback') && obj.callback();
+					return;
+				}
+				
+				// Check for timeout translation (2 seconds timeout)
+				if(obj.counter > 8){
+					obj.hasOwnProperty('errCallback') && obj.errCallback();
+					return;
+				}
+				
+				// Run next check
+				setTimeout(() => checkTranslationCompletion(obj), 250);
+			}
+
+			function googleTranslateReady() {
+				isGoogleTranslateReady = true;
+			}
+
+			function googleTranslateElementRun(sourceLanguage, targetLanguage) {
+				if (!isGoogleTranslateReady) return;
+				
+				new google.translate.TranslateElement({
+					'pageLanguage': sourceLanguage,	// Set source language
+					'includedLanguages': 'en,' + targetLanguage,
+				}, 'google_translate_element');
+				
+				// Wait for Google Translate selector to be appended
+				let checkSelectorCounter = 0, 
+				    interval = setInterval(()=>{
+					checkSelectorCounter++;
+					    
+					// 2 seconds timeout for Input Selector detection
+					if(checkSelectorCounter >= 8) {
+						clearInterval(interval);
+						return;
+					}
+					    
+					// Get Google Translate input selector
+					let elem = document.querySelector('#google_translate_element select');	
+					
+					// Make sure element exists
+					if(!elem) return;
+					   
+					// Set target language
+					elem.value = targetLanguage;
+
+					// Trigger translation
+					elem.dispatchEvent(new Event('change'));
+					
+					//console.log('run')
+					
+					clearInterval(interval);
+				}, 250);
+			}
+		</script>
+		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateReady"></script>
+	</body>
+</html>
