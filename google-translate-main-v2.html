@@ -13,7 +13,7 @@
 		<button onclick="paraphrase()" id="button">Go</button>
 		<script>
 			const languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'];
-			let languagesOTG;
+			//let languagesOTG;
 			
 			window.addEventListener("message", (e) => {
 				if (typeof e.data !== 'object') return;
@@ -67,23 +67,20 @@
 				document.getElementById('button').disabled = true;
 				
 				// Clone and shuffle array
-				languagesOTG = shuffleArray(languages).slice((((Math.random() * 3) + 2) << 0) * -1);
+				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 3) + 2) << 0) * -1);
 				// Insert 'en' language at first and last index
 				languagesOTG.unshift('en');
 				languagesOTG.push('en');
 				
 				// Start translation
-				initTranslation().then(e => {
-					e[0].contentWindow.postMessage({
-						'languages': languagesOTG,
-						'sourceText': document.getElementById('textarea').value
-					}, '*');
+				initTranslation(languagesOTG, document.getElementById('textarea').value).then(e => {
+					console.log(e);
 				}).catch(console.log);
 			}
 
-			function initTranslation() {
+			async function initTranslation(languages, sourceText) {
 				// Create iframe
-				let ifrm = prepareFrame('google-translate-embed-v2.html', document.getElementById('iframe-parent'));
+				const ifrm = prepareFrame('google-translate-embed-v2.html', document.getElementById('iframe-parent'));
 				
 				const promise1 = new Promise((resolve, reject) => {
 					// Iframe onLoad handler
@@ -97,7 +94,7 @@
 				});
 				
 				const promise2 = new Promise((resolve, reject) => {
-					// Embed onReady handler
+					// Embed onMessage handler
 					function onMessage(e) {
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						if (e.data.type === 'ready') {
@@ -111,7 +108,27 @@
 					window.addEventListener("message", onMessage);
 				});
 				
-				return Promise.all([promise1, promise2]);
+				await Promise.all([promise1, promise2]);
+				
+				ifrm.contentWindow.postMessage({
+					'languages': languages,
+					'sourceText': sourceText,
+				}, '*');
+				
+				return new Promise((resolve, reject) => {
+					// Embed onMessage handler
+					function onMessage(e) {
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
+						if (e.data.type === 'success') {
+							window.removeEventListener("message", onMessage) || resolve();
+						}
+						console.log(e.data);
+					}
+					setTimeout(() => {
+						window.removeEventListener("message", onMessage) || reject(new Error('Embed response timeout!'));
+					}, 5000);
+					window.addEventListener("message", onMessage);
+				});
 			}
 		</script>
 	</body>
