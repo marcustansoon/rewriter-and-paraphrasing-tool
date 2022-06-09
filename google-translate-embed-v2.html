@@ -29,7 +29,7 @@
 					// Run Google Translate
 					startTranslation(e.data.languages, document.getElementById('source')).then(result => {
 						window.top.postMessage({
-							'type': 'success',
+							'type': 'er',
 							'result': result,
 						}, '*');
 					}, (err) => {
