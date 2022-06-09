@@ -41,7 +41,7 @@
 				document.getElementById('button').disabled = true;
 				
 				// Clone and shuffle array
-				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 3) + 2) << 0) * -1);
+				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 4) + 2) << 0) * -1);
 				
 				// Insert 'en' language at first and last index
 				languagesOTG.unshift('en');
@@ -59,8 +59,8 @@
 			function prepareFrame(src, parentElement) {
 				let ifrm = document.createElement("iframe");
 				ifrm.setAttribute("src", src);
-				ifrm.style.width = "200px";
-				ifrm.style.height = "200px";
+				ifrm.style.width = "100px";
+				ifrm.style.height = "100px";
 				parentElement.appendChild(ifrm);
 				return ifrm;
 			}
