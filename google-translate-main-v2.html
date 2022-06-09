@@ -17,6 +17,7 @@
 			function onResultReceived(result) {
 				result && (document.getElementById('result').value = result);
 				document.getElementById('button').disabled = false;
+				document.getElementById('iframe-parent').innerHTML = '';
 			}
 			
 			let elem = document.getElementById('iframe-parent'),
@@ -76,27 +77,29 @@
 				
 				// Wait for iframe to be loaded
 				const promise1 = new Promise((resolve, reject) => {
-					// Iframe onLoad handler
-					function onLoad() {
-						ifrm.removeEventListener('load', onLoad) || resolve();
-					}
-					setTimeout(() => {
+					const timeout = setTimeout(() => {
 						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'));
 					}, 5000);
+					// Iframe onLoad handler
+					function onLoad() {
+						clearTimeout(timeout) || ifrm.removeEventListener('load', onLoad) || resolve();		// Remove timeout callback and listener
+					}
 					ifrm.addEventListener('load', onLoad);
 				});
 				
 				// Wait for Google ready message from Embed
 				const promise2 = new Promise((resolve, reject) => {
-					// Embed onMessage handler
-					function onMessage(e) {
-						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
-						e.data.type === 'ready' && (window.removeEventListener("message", onMessage) || resolve());
-						console.log(e.data);
-					}
-					setTimeout(() => {
+					// Response timeout
+					const timeout = setTimeout(() => {
 						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'));
 					}, 5000);
+					// Embed onMessage handler
+					function onMessage(e) {
+						clearTimeout(timeout) || window.removeEventListener("message", onMessage); 		// Remove timeout callback and listener
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
+						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.message));
+						console.log(e.data);
+					}
 					window.addEventListener("message", onMessage);
 				});
 				
@@ -109,15 +112,17 @@
 				}, '*');
 				
 				return new Promise((resolve, reject) => {
-					// Embed onMessage handler
-					function onMessage(e) {
-						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
-						e.data.type === 'success' && (window.removeEventListener("message", onMessage) || resolve(e.data.result));
-						console.log(e.data);
-					}
-					setTimeout(() => {
+					// Response timeout
+					const timeout = setTimeout(() => {
 						window.removeEventListener("message", onMessage) || reject(new Error('Embed response timeout!'));
 					}, 5000);
+					// Embed onMessage handler
+					function onMessage(e) {
+						clearTimeout(timeout) || window.removeEventListener("message", onMessage);		// Remove timeout callback and listener
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));	
+						e.data.type === 'success' ? resolve(e.data.result) : reject(new Error(e.data.message));
+						console.log(e.data);
+					}
 					window.addEventListener("message", onMessage);
 				});
 			}
