@@ -51,14 +51,9 @@
 			}
 			
 			function getInnerHTML(elem){
-				let appendString = '';
-				if(elem.childElementCount){
-					[...elem.children].forEach(e => {
-						appendString += getInnerHTML(e);
-					});
-					return appendString;
-				}
-				return elem.innerHTML;
+				return elem.childElementCount ? [...elem.children].reduce((string, e) => {
+					return string += getInnerHTML(e);
+				}, '') : elem.innerHTML;
 			}
 			
 			function runTranslation(sourceLanguage, targetLanguage, elem) {
@@ -82,12 +77,11 @@
 								prevLang = language;
 								continue;
 							} 
-							elem.innerHTML =  await runTranslation(prevLang, language, elem);
-							prevLang = language;
+							elem.innerHTML =  await runTranslation(prevLang, prevLang = language, elem);
 						};
 						resolve(getInnerHTML(elem));	// Resolve translated result
 					} catch(e) {
-						reject(e);
+						reject(e);			// Reject due to error
 					}
 				});
 			}
