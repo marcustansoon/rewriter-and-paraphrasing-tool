@@ -73,7 +73,7 @@
 			window.onmessage = function(e) {
 				if (typeof e.data !== 'object') return;
 				if (e.data.type === 'ready'){
-					console.log('ready');
+					// console.log('ready');
 				} else if (e.data.type === 'success') {
 					result.value = e.data.result;
 					document.getElementById('button').disabled = false;
