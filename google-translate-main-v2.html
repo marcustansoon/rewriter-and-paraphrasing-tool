@@ -74,7 +74,7 @@
 			 * 'e' is the event object
 			 */
 			function getFrameTarget (e) {
-				const frames = document.getElementsByTagName('iframe'),
+				let frames = document.getElementsByTagName('iframe'),
 				frameId = 0,
 				framesLength = frames.length;
 
