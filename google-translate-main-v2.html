@@ -63,7 +63,7 @@
 				languagesOTG.push('en');
 				
 				// Start translation
-				initTranslation(languagesOTG, document.getElementById('textarea').value).then(result => {
+				initTranslation(languagesOTG, document.getElementById('textarea').value, document.getElementById('iframe-parent')).then(result => {
 					onResultReceived(result);
 				}).catch((e) =>{
 					console.log(e);
@@ -71,9 +71,9 @@
 				});
 			}
 
-			async function initTranslation(languages, sourceText) {
+			async function initTranslation(languages, sourceText, iframeParent) {
 				// Create iframe
-				const ifrm = prepareFrame('google-translate-embed-v2.html', document.getElementById('iframe-parent'));
+				const ifrm = prepareFrame('google-translate-embed-v2.html', iframeParent);
 				
 				// Wait for iframe to be loaded
 				const promise1 = new Promise((resolve, reject) => {
