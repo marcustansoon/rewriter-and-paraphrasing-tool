@@ -12,7 +12,8 @@
 		<textarea id='result' rows="12" cols="80%"></textarea>
 		<button onclick="paraphrase()" id="button">Go</button>
 		<script>
-			let elem = document.getElementById('iframe-parent');
+			let elem = document.getElementById('iframe-parent'),
+			    result = document.getElementById('result');
 
 			function prepareFrame(src, parentElement) {
 				let ifrm = document.createElement("iframe");
@@ -43,7 +44,6 @@
 					alert("Too many words yo!");
 					return;
 				}
-				res = '';
 				document.getElementById('button').disabled = true;
 				// Clone and shuffle array
 				languagesOTG = shuffleArray(languages).slice((((Math.random() * 2) + 2) << 0) * -1);
@@ -76,7 +76,8 @@
 			window.onmessage = function(e) {
 				if (typeof e.data !== 'object') return;
 				if (e.data.type === 'success') {
-					res = e.data;
+					result.value = e.data.result;
+					document.getElementById('button').disabled = false;
 				}
 				console.log(e.data);
 			};
