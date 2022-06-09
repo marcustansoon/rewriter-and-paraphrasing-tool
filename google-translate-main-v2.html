@@ -13,20 +13,9 @@
 		<button onclick="paraphrase()" id="button">Go</button>
 		<script>
 			const languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'];
-			//let languagesOTG;
 			
-			window.addEventListener("message", (e) => {
-				if (typeof e.data !== 'object') return;
-				if (e.data.type === 'ready') {
-					
-				} else if (e.data.type === 'success') {
-					successFrame(e.data.result);
-				}
-				console.log(e.data);
-			}, false);
-			
-			function successFrame(result) {
-				document.getElementById('result').value = result;
+			function onResultReceived(result) {
+				result && (document.getElementById('result').value = result);
 				document.getElementById('button').disabled = false;
 			}
 			
@@ -73,15 +62,19 @@
 				languagesOTG.push('en');
 				
 				// Start translation
-				initTranslation(languagesOTG, document.getElementById('textarea').value).then(e => {
+				initTranslation(languagesOTG, document.getElementById('textarea').value).then(result => {
+					onResultReceived(result);
+				}).catch((e) =>{
 					console.log(e);
-				}).catch(console.log);
+					onResultReceived();
+				});
 			}
 
 			async function initTranslation(languages, sourceText) {
 				// Create iframe
 				const ifrm = prepareFrame('google-translate-embed-v2.html', document.getElementById('iframe-parent'));
 				
+				// Wait for iframe to be loaded
 				const promise1 = new Promise((resolve, reject) => {
 					// Iframe onLoad handler
 					function onLoad() {
@@ -93,6 +86,7 @@
 					ifrm.addEventListener('load', onLoad);
 				});
 				
+				// Wait for ready message from Embed
 				const promise2 = new Promise((resolve, reject) => {
 					// Embed onMessage handler
 					function onMessage(e) {
@@ -110,6 +104,7 @@
 				
 				await Promise.all([promise1, promise2]);
 				
+				// Initiate translation process
 				ifrm.contentWindow.postMessage({
 					'languages': languages,
 					'sourceText': sourceText,
