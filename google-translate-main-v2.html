@@ -59,7 +59,7 @@
 			}
 			
 			// Create iframe
-			function prepareFrame(src, parentElement) {
+			function prepareFrame (src, parentElement) {
 				let ifrm = document.createElement("iframe");
 				ifrm.setAttribute("src", src);
 				ifrm.style.width = "100px";
@@ -68,10 +68,28 @@
 				return ifrm;
 			}
 			
+			/**
+			 * Returns the iframe corresponding to a message event or null if not found.
+			 * 
+			 * 'e' is the event object
+			 */
+			function getFrameTarget (e) {
+				const frames = document.getElementsByTagName('iframe'),
+				frameId = 0,
+				framesLength = frames.length;
+
+				for (; frameId < framesLength; frameId++) {
+					if (frames[frameId].contentWindow === e.source) {
+						return frames[frameId];
+					}
+				}
+				return null;
+			}
+			
 			// languages -> ['ms', 'ru', 'ln']
 			// sourceText -> Text to be paraphrased
 			// iframeParent -> element which acts as iframe parent
-			async function initTranslation(languages, sourceText, iframeParent) {
+			async function initTranslation (languages, sourceText, iframeParent) {
 				// Create iframe
 				const ifrm = prepareFrame('google-translate-embed-v2.html', iframeParent);
 				
@@ -95,6 +113,7 @@
 					}, 5000);
 					// Embed onMessage handler
 					function onMessage(e) {
+						if(!getFrameTarget(e)) return;
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage); 		// Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.message));
@@ -119,6 +138,7 @@
 					}, 5000);
 					// Embed onMessage handler
 					function onMessage(e) {
+						if(!getFrameTarget(e)) return;
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage);		// Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));	
 						e.data.type === 'success' ? resolve(e.data.result) : reject(new Error(e.data.message));
