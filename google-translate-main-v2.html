@@ -12,6 +12,24 @@
 		<textarea id='result' rows="12" cols="80%"></textarea>
 		<button onclick="paraphrase()" id="button">Go</button>
 		<script>
+			const languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'];
+			let languagesOTG;
+			
+			window.addEventListener("message", (e) => {
+				if (typeof e.data !== 'object') return;
+				if (e.data.type === 'ready') {
+					
+				} else if (e.data.type === 'success') {
+					successFrame(e.data.result);
+				}
+				console.log(e.data);
+			}, false);
+			
+			function successFrame(result) {
+				document.getElementById('result').value = result;
+				document.getElementById('button').disabled = false;
+			}
+			
 			let elem = document.getElementById('iframe-parent'),
 			    result = document.getElementById('result');
 
@@ -24,12 +42,9 @@
 				return ifrm;
 			}
 			
-			function destroyFrame() {
-				elem.innerHTML = '';
+			function destroyFrame(iframe) {
+				return iframe.parentElement.removeChild(iframe);
 			}
-			
-			let languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'],
-			languagesOTG;
 
 			function shuffleArray(array) {
 				let newArr = array.slice();
@@ -41,7 +56,6 @@
 			}
 
 			function paraphrase() {
-				destroyFrame();
 				if (document.getElementById('textarea').value.split(" ").length < 15) {
 					alert("Must contains at least 15 words yo!");
 					return;
@@ -49,38 +63,57 @@
 					alert("Too many words yo!");
 					return;
 				}
+				
 				document.getElementById('button').disabled = true;
+				
 				// Clone and shuffle array
 				languagesOTG = shuffleArray(languages).slice((((Math.random() * 3) + 2) << 0) * -1);
 				// Insert 'en' language at first and last index
 				languagesOTG.unshift('en');
 				languagesOTG.push('en');
+				
 				// Start translation
 				startTranslation();
 			}
 
-			function startTranslation() {
-				let ifrm = prepareFrame('google-translate-embed-v2.html', elem);
+			function initTranslation() {
+				// Create iframe
+				let ifrm = prepareFrame('google-translate-embed-v2.html', document.getElementById('iframe-parent'));
+				
+				const promise1 = new Promise((resolve, reject) => {
+					function onLoad() {
+						ifrm.removeEventListener('load', onLoad) || resolve(true);
+					}
+					setTimeout(() => {
+						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'))
+					}), 5000);
+					ifrm.addEventListener('load', onLoad);
+				});
 				
 				// Iframe onload handler
-				ifrm.addEventListener('load', function() {
+				/*ifrm.addEventListener('load', function() {
 					ifrm.contentWindow.postMessage({
 						'languages': languagesOTG,
 						'sourceText': document.getElementById('textarea').value
 					}, '*');
-				}, true);
+				}, true);*/
+				
+				const promise2 = new Promise((resolve, reject) => {
+					function onMessage(e) {
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
+						if (e.data.type === 'ready') {
+							window.removeEventListener("message", onMessage) || resolve(true);
+						}
+						console.log(e.data);
+					}
+					setTimeout(() => {
+						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'))
+					}), 5000);
+					window.addEventListener("message", onMessage);
+				});
+				
+				return Promise.all([promise1, promise2]);
 			}
-			
-			window.onmessage = function(e) {
-				if (typeof e.data !== 'object') return;
-				if (e.data.type === 'ready'){
-					// console.log('ready');
-				} else if (e.data.type === 'success') {
-					result.value = e.data.result;
-					document.getElementById('button').disabled = false;
-				}
-				console.log(e.data);
-			};
 		</script>
 	</body>
 </html>
