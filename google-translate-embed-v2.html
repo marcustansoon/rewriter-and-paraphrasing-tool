@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Paraphrasing Tool</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+	</head>
+	<body>
+		<div id="source"></div>
+		<script>
+			let lib;
+			
+			window.onmessage = function(e) {
+				try {
+					if (!e || !e.data) throw 'Invalid message received!';
+				} catch (e) {
+					console.error(e);
+					return;
+				}
+				//console.log('Received');
+				//console.log(e.data);
+				if (typeof e.data === 'object' && e.data.languages && Array.isArray(e.data.languages) && e.data.sourceText) {
+					// Set source text
+					document.getElementById('source').innerHTML = e.data.sourceText;
+				
+					// Run Google Translate
+					startTranslation(e.data.languages, document.getElementById('source')).then(result => {
+						window.top.postMessage({
+							'type': 'success',
+							'result': result,
+						}, '*');
+					}, (err) => {
+						window.top.postMessage({
+							'type': 'error',
+							'message': err,
+						}, '*');
+					});
+				}
+			};
+			
+			function gtElInit() {
+				lib = new google.translate.TranslateService();
+				//setTimeout(()=>{
+					window.top.postMessage({
+						'type': 'ready',
+					}, '*');
+				//}, 500);
+			}
+			
+			function getInnerHTML(elem){
+				let appendString = '';
+				if(elem.childElementCount){
+					[...elem.children].forEach(e => {
+						appendString += getInnerHTML(e);
+					});
+					return appendString;
+				}
+				return elem.innerHTML;
+			}
+			
+			function runTranslation(sourceLanguage, targetLanguage, elem) {
+				return new Promise((resolve, reject) => {
+					if(!lib) reject(new Error('Google Translate Library is not ready!'));
+					lib.translatePage(sourceLanguage, targetLanguage, 
+						function(e) {
+							const result = getInnerHTML(elem);
+							lib.restore() || resolve(result);
+						}
+					);
+				});
+			}
+			
+			function startTranslation(languages, elem) {
+				return new Promise(async (resolve, reject) => {
+					try {
+						let prevLang;
+						for (const [index, language] of languages.entries()) {
+							if (!index) {
+								prevLang = language;
+								continue;
+							} 
+							elem.innerHTML =  await runTranslation(prevLang, language, elem);
+							prevLang = language;
+						};
+						resolve(getInnerHTML(elem));	// Resolve translated result
+					} catch(e) {
+						reject(e);
+					}
+				});
+			}
+		</script>
+		<script src="https://translate.google.com/translate_a/element.js?cb=gtElInit&client=wt" type="text/javascript"></script>
+	</body>
+</html>
