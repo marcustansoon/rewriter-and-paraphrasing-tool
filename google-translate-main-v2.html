@@ -58,6 +58,7 @@
 				
 				// Clone and shuffle array
 				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 3) + 2) << 0) * -1);
+				
 				// Insert 'en' language at first and last index
 				languagesOTG.unshift('en');
 				languagesOTG.push('en');
@@ -66,7 +67,7 @@
 				initTranslation(languagesOTG, document.getElementById('textarea').value, document.getElementById('iframe-parent')).then(result => {
 					onResultReceived(result);
 				}).catch((e) =>{
-					console.log(e);
+					console.error(e);
 					onResultReceived();
 				});
 			}
