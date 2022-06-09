@@ -73,7 +73,12 @@
 				languagesOTG.push('en');
 				
 				// Start translation
-				initTranslation().then(e => {console.log(e)}).catch(console.log);
+				initTranslation().then(e => {
+					e[0].contentWindow.postMessage({
+						'languages': languagesOTG,
+						'sourceText': document.getElementById('textarea').value
+					}, '*');
+				}).catch(console.log);
 			}
 
 			function initTranslation() {
@@ -81,8 +86,9 @@
 				let ifrm = prepareFrame('google-translate-embed-v2.html', document.getElementById('iframe-parent'));
 				
 				const promise1 = new Promise((resolve, reject) => {
+					// Iframe onLoad handler
 					function onLoad() {
-						ifrm.removeEventListener('load', onLoad) || resolve(true);
+						ifrm.removeEventListener('load', onLoad) || resolve(ifrm);
 					}
 					setTimeout(() => {
 						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'));
@@ -90,19 +96,12 @@
 					ifrm.addEventListener('load', onLoad);
 				});
 				
-				// Iframe onload handler
-				/*ifrm.addEventListener('load', function() {
-					ifrm.contentWindow.postMessage({
-						'languages': languagesOTG,
-						'sourceText': document.getElementById('textarea').value
-					}, '*');
-				}, true);*/
-				
 				const promise2 = new Promise((resolve, reject) => {
+					// Embed onReady handler
 					function onMessage(e) {
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						if (e.data.type === 'ready') {
-							window.removeEventListener("message", onMessage) || resolve(true);
+							window.removeEventListener("message", onMessage) || resolve();
 						}
 						console.log(e.data);
 					}
