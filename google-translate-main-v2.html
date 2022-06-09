@@ -73,7 +73,7 @@
 				languagesOTG.push('en');
 				
 				// Start translation
-				startTranslation();
+				initTranslation().then(e => {console.log(e)}).catch(console.log);
 			}
 
 			function initTranslation() {
@@ -85,8 +85,8 @@
 						ifrm.removeEventListener('load', onLoad) || resolve(true);
 					}
 					setTimeout(() => {
-						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'))
-					}), 5000);
+						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'));
+					}, 5000);
 					ifrm.addEventListener('load', onLoad);
 				});
 				
@@ -107,8 +107,8 @@
 						console.log(e.data);
 					}
 					setTimeout(() => {
-						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'))
-					}), 5000);
+						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'));
+					}, 5000);
 					window.addEventListener("message", onMessage);
 				});
 				
