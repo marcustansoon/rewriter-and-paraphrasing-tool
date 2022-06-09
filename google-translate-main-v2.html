@@ -120,7 +120,7 @@
 					function onMessage(e) {
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						if (e.data.type === 'success') {
-							window.removeEventListener("message", onMessage) || resolve();
+							window.removeEventListener("message", onMessage) || resolve(e.data.result);
 						}
 						console.log(e.data);
 					}
