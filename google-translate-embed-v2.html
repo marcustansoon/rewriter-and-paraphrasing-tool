@@ -21,6 +21,7 @@
 				}
 				//console.log('Received');
 				//console.log(e.data);
+				// e.data.languages -> ['en', 'ms', 'sn', 'mi', 'en']
 				if (typeof e.data === 'object' && e.data.languages && Array.isArray(e.data.languages) && e.data.sourceText) {
 					// Set source text
 					document.getElementById('source').innerHTML = e.data.sourceText;
