@@ -85,7 +85,7 @@
 				const promise1 = new Promise((resolve, reject) => {
 					// Iframe onLoad handler
 					function onLoad() {
-						ifrm.removeEventListener('load', onLoad) || resolve(ifrm);
+						ifrm.removeEventListener('load', onLoad) || resolve();
 					}
 					setTimeout(() => {
 						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'));
