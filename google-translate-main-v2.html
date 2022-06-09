@@ -24,6 +24,10 @@
 				return ifrm;
 			}
 			
+			function destroyFrame() {
+				elem.innerHTML = '';
+			}
+			
 			let languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'],
 			languagesOTG;
 
@@ -46,7 +50,7 @@
 				}
 				document.getElementById('button').disabled = true;
 				// Clone and shuffle array
-				languagesOTG = shuffleArray(languages).slice((((Math.random() * 2) + 2) << 0) * -1);
+				languagesOTG = shuffleArray(languages).slice((((Math.random() * 2) + 3) << 0) * -1);
 				// Insert 'en' language at first and last index
 				languagesOTG.unshift('en');
 				languagesOTG.push('en');
@@ -55,9 +59,6 @@
 			}
 
 			function startTranslation() {
-				// Destroy iframe
-				elem.innerHTML = '';
-				
 				let ifrm = prepareFrame('google-translate-embed-v2.html', elem);
 				
 				// Iframe onload handler
@@ -66,17 +67,13 @@
 						'languages': languagesOTG,
 						'sourceText': document.getElementById('textarea').value
 					}, '*');
-					console.log({
-						'languages': languagesOTG,
-						'sourceText': document.getElementById('textarea').value
-					})
 				}, true);
 			}
 			
 			window.onmessage = function(e) {
 				if (typeof e.data !== 'object') return;
 				if (e.data.type === 'ready'){
-				
+					console.log('ready');
 				} else if (e.data.type === 'success') {
 					result.value = e.data.result;
 					document.getElementById('button').disabled = false;
