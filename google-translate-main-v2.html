@@ -19,22 +19,6 @@
 				document.getElementById('button').disabled = false;
 				document.getElementById('iframe-parent').innerHTML = '';
 			}
-			
-			let elem = document.getElementById('iframe-parent'),
-			    result = document.getElementById('result');
-
-			function prepareFrame(src, parentElement) {
-				let ifrm = document.createElement("iframe");
-				ifrm.setAttribute("src", src);
-				ifrm.style.width = "200px";
-				ifrm.style.height = "200px";
-				parentElement.appendChild(ifrm);
-				return ifrm;
-			}
-			
-			function destroyFrame(iframe) {
-				return iframe.parentElement.removeChild(iframe);
-			}
 
 			function shuffleArray(array) {
 				let newArr = array.slice();
@@ -70,6 +54,15 @@
 					console.error(e);
 					onResultReceived();
 				});
+			}
+
+			function prepareFrame(src, parentElement) {
+				let ifrm = document.createElement("iframe");
+				ifrm.setAttribute("src", src);
+				ifrm.style.width = "200px";
+				ifrm.style.height = "200px";
+				parentElement.appendChild(ifrm);
+				return ifrm;
 			}
 
 			async function initTranslation(languages, sourceText, iframeParent) {
