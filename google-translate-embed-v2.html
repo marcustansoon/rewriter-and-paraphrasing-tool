@@ -43,11 +43,9 @@
 			
 			function gtElInit() {
 				lib = new google.translate.TranslateService();
-				//setTimeout(()=>{
-					window.top.postMessage({
-						'type': 'ready',
-					}, '*');
-				//}, 500);
+				window.top.postMessage({
+					'type': 'ready',
+				}, '*');
 			}
 			
 			function getInnerHTML(elem){
