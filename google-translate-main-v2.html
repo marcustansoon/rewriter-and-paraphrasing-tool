@@ -86,14 +86,12 @@
 					ifrm.addEventListener('load', onLoad);
 				});
 				
-				// Wait for ready message from Embed
+				// Wait for Google ready message from Embed
 				const promise2 = new Promise((resolve, reject) => {
 					// Embed onMessage handler
 					function onMessage(e) {
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
-						if (e.data.type === 'ready') {
-							window.removeEventListener("message", onMessage) || resolve();
-						}
+						e.data.type === 'ready' && (window.removeEventListener("message", onMessage) || resolve());
 						console.log(e.data);
 					}
 					setTimeout(() => {
@@ -114,9 +112,7 @@
 					// Embed onMessage handler
 					function onMessage(e) {
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
-						if (e.data.type === 'success') {
-							window.removeEventListener("message", onMessage) || resolve(e.data.result);
-						}
+						e.data.type === 'success' && (window.removeEventListener("message", onMessage) || resolve(e.data.result));
 						console.log(e.data);
 					}
 					setTimeout(() => {
