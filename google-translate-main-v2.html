@@ -62,6 +62,7 @@
 			function prepareFrame (src, parentElement) {
 				let ifrm = document.createElement("iframe");
 				ifrm.setAttribute("src", src);
+				ifrm.setAttribute("iframe-type", "gt");
 				ifrm.style.width = "100px";
 				ifrm.style.height = "100px";
 				parentElement.appendChild(ifrm);
@@ -105,15 +106,16 @@
 					ifrm.addEventListener('load', onLoad);
 				});
 				
-				// Wait for ready message from Embed
+				// Wait for ready message from iframe (indicating Google Translate library is ready)
 				const promise2 = new Promise((resolve, reject) => {
 					// Response timeout
 					const timeout = setTimeout(() => {
 						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'));
 					}, 5000);
-					// Embed onMessage handler
+					// Iframe onMessage handler
 					function onMessage(e) {
-						if(!getFrameTarget(e)) return;
+						const sourceElem = getFrameTarget(e);
+						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended recipient (iframe)
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage); 		// Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.message));
@@ -122,23 +124,25 @@
 					window.addEventListener("message", onMessage);
 				});
 				
+				// Wait all promises
 				await Promise.all([promise1, promise2]);
 				
-				// Initiate translation process
+				// Initiate translation process (iframe)
 				ifrm.contentWindow.postMessage({
 					'languages': languages,
 					'sourceText': sourceText,
 				}, '*');
 				
-				// Wait for translated result from Embed
+				// Wait for translated result from iframe
 				return new Promise((resolve, reject) => {
 					// Response timeout
 					const timeout = setTimeout(() => {
 						window.removeEventListener("message", onMessage) || reject(new Error('Embed response timeout!'));
 					}, 5000);
-					// Embed onMessage handler
+					// Iframe onMessage handler
 					function onMessage(e) {
-						if(!getFrameTarget(e)) return;
+						const sourceElem = getFrameTarget(e);
+						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended recipient (iframe)
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage);		// Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));	
 						e.data.type === 'success' ? resolve(e.data.result) : reject(new Error(e.data.message));
