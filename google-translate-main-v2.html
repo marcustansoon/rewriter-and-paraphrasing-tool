@@ -115,7 +115,7 @@
 					// Iframe onMessage handler
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
-						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended recipient (iframe)
+						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended source (iframe)
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage); 		// Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.message));
@@ -142,7 +142,7 @@
 					// Iframe onMessage handler
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
-						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended recipient (iframe)
+						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended source (iframe)
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage);		// Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));	
 						e.data.type === 'success' ? resolve(e.data.result) : reject(new Error(e.data.message));
