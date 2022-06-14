@@ -51,7 +51,9 @@
 					reader.onerror = error => reject(error);
 				});
 				document.getElementById('decode').disabled = true;
+				// Convert image file to base64 string
 				toBase64(document.getElementById('file').files[0]).then(base64Image => {
+					// Decode image
 					initTesseract(base64Image).then(result => {
 						onResultReceivedTesseract(result);
 					}).catch(e => {
