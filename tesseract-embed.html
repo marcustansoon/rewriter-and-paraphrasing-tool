@@ -20,12 +20,14 @@
 				}
 				//console.log('Received');
 				//console.log(e.data);
-				if (typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage && e.data.sourceText) {
-					// Set source text
-					document.getElementById('source').innerHTML = e.data.sourceText;
-					
-					// Run Google Translate
-					googleTranslateElementRun(e.data.sourceLanguage, e.data.targetLanguage);
+				if (typeof e.data === 'object' && e.data.base64Image) {
+					// Run
+					runTesseract(e.data.base64Image).then(text => {
+						window.top.postMessage({
+							'type': 'success',
+							'text': text,
+						}, '*');
+					});
 				}
 			};
 			
