@@ -25,12 +25,12 @@
 					runTesseract(e.data.base64Image).then(text => {
 						window.top.postMessage({
 							'type': 'success',
-							'text': text,
+							'data': text,
 						}, '*');
 					}).catch(e => {
 						window.top.postMessage({
 							'type': 'error',
-							'text': e,
+							'data': e,
 						}, '*');
 					});
 				}
@@ -54,7 +54,15 @@
 						const url = URL.createObjectURL(blob, {
 							type: "image/png"
 						});
-						const { data: { text } } = await Tesseract.recognize(url, 'eng', {logger: m => console.log(m)});
+						const { data: { text } } = await Tesseract.recognize(url, 'eng', {
+							logger: m => {
+								console.log(m);
+								window.top.postMessage({
+									'type': 'progress',
+									'data': m,
+								}, '*');
+							}
+						});
 						resolve(text);
 					} catch (e) {
 						reject(new Error(e));
