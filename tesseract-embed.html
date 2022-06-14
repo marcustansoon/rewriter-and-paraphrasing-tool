@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+	</head>
+	<body>
+		<script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+		<script type="modules">
+			import Tesseract from 'tesseract.js';
+		</script>
+		<script type="text/javascript">
+			
+			window.onmessage = function(e) {
+				try {
+					if (!e || !e.data) throw 'Invalid message received!';
+				} catch (e) {
+					alert(e);
+					return;
+				}
+				//console.log('Received');
+				//console.log(e.data);
+				if (typeof e.data === 'object' && e.data.sourceLanguage && e.data.targetLanguage && e.data.sourceText) {
+					// Set source text
+					document.getElementById('source').innerHTML = e.data.sourceText;
+					
+					// Run Google Translate
+					googleTranslateElementRun(e.data.sourceLanguage, e.data.targetLanguage);
+				}
+			};
+			
+			function tesseractReadyCheck() {
+				const interval = setInterval(() => {
+					if(typeof Tesseract === 'undefined') return;
+					clearInterval(interval);
+					window.top.postMessage({
+						'type': 'ready'
+					}, '*');
+					console.log('t ready');
+				}, 500);
+			}
+			
+			tesseractReadyCheck();
+			
+			function runTesseract (base64Image) {
+				const promise = new Promise(async (resolve, reject) => {
+					try {
+						const blob = await fetch(base64Image).then(res => res.blob());
+						const url = URL.createObjectURL(blob, {
+							type: "image/png"
+						});
+						const { data: { text } } = await Tesseract.recognize(url,
+							'eng', {
+								logger: m => console.log(m)
+							}).then(({
+							data: {
+								text
+							}
+						});
+						resolve(text);
+					} catch (e) {
+						console.error(e);
+					}
+				});
+			}
+		</script>
+	</body>
+</html>
