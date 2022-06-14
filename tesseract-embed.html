@@ -20,8 +20,9 @@
 				}
 				//console.log('Received');
 				//console.log(e.data);
+				// e.data.data -> base64 Image string
 				if (typeof e.data === 'object' && e.data.data) {
-					// Run
+					// Run Tesseract
 					runTesseract(e.data.data).then(text => {
 						window.top.postMessage({
 							'type': 'success',
