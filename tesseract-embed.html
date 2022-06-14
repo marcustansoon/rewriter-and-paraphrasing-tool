@@ -49,17 +49,10 @@
 						const url = URL.createObjectURL(blob, {
 							type: "image/png"
 						});
-						const { data: { text } } = await Tesseract.recognize(url,
-							'eng', {
-								logger: m => console.log(m)
-							}).then(({
-							data: {
-								text
-							}
-						});
+						const { data: { text } } = await Tesseract.recognize(url, 'eng', {logger: m => console.log(m)});
 						resolve(text);
 					} catch (e) {
-						console.error(e);
+						reject(new Error(e));
 					}
 				});
 			}
