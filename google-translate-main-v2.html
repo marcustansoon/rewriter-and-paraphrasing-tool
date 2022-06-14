@@ -69,7 +69,7 @@
 					// Response timeout
 					const timeout = setTimeout(() => {
 						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'));
-					}, 5000);
+					}, 30*1000);
 					// Iframe onMessage handler
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
@@ -95,11 +95,11 @@
 					// Response timeout
 					const timeout = setTimeout(() => {
 						window.removeEventListener("message", onMessage) || reject(new Error('Embed response timeout!'));
-					}, 5000);
+					}, 60*1000);
 					// Iframe onMessage handler
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
-						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'tesseract') return; // Make sure message is coming from the intended source (iframe)
+						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'tesseract' || e && e.data && e.data.type === 'progress') return; // Make sure message is coming from the intended source (iframe)
 						clearTimeout(timeout) || window.removeEventListener("message", onMessage); // Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
 						e.data.type === 'success' ? resolve(e.data.data) : reject(new Error(e.data.data));
