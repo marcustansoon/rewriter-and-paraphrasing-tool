@@ -27,6 +27,11 @@
 							'type': 'success',
 							'text': text,
 						}, '*');
+					}).catch(e => {
+						window.top.postMessage({
+							'type': 'error',
+							'text': e,
+						}, '*');
 					});
 				}
 			};
