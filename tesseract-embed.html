@@ -29,7 +29,7 @@
 				}
 			};
 			
-			function tesseractReadyCheck() {
+			(function tesseractReadyCheck() {
 				const interval = setInterval(() => {
 					if(typeof Tesseract === 'undefined') return;
 					clearInterval(interval);
@@ -38,9 +38,7 @@
 					}, '*');
 					console.log('t ready');
 				}, 500);
-			}
-			
-			tesseractReadyCheck();
+			})();
 			
 			function runTesseract (base64Image) {
 				const promise = new Promise(async (resolve, reject) => {
