@@ -36,7 +36,7 @@
 			}
 			
 			// Decode image file
-			function decode() {
+			async function decode() {
 				if (!document.getElementById('file').files.length) return;
 				const toBase64 = file => new Promise((resolve, reject) => {
 					const reader = new FileReader();
@@ -45,7 +45,9 @@
 					reader.onerror = error => reject(error);
 				});
 				document.getElementById('decode').disabled = true;
-				toBase64(document.getElementById('file').files[0]).then(base64Image => initTesseract(base64Image)).catch(e => console.error(e));
+				const base64Image = await toBase64(document.getElementById('file').files[0]);
+				let text = await initTesseract(base64Image)
+				console.log(text);
 			}
 
 			async function initTesseract(base64Image) {
