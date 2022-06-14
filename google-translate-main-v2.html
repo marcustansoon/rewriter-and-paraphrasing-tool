@@ -19,10 +19,16 @@
 		<script>
 			const languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'];
 
-			function onResultReceived(result) {
+			function onResultReceivedGT(result) {
 				result && (document.getElementById('result').value = result); // Display result if exists
 				document.getElementById('button').disabled = false; // Enable button
 				document.getElementById('iframe-parent').innerHTML = ''; // Remove iframe
+			}
+			
+			function onResultReceivedTesseract(result) {
+				result && (document.getElementById('textarea').value = result); // Display result if exists
+				document.getElementById('decode').disabled = false; // Enable button
+				document.getElementById('iframe-parent-tesseract').innerHTML = ''; // Remove iframe
 			}
 			
 			// Shuffle array
@@ -36,7 +42,7 @@
 			}
 			
 			// Decode image file
-			async function decode() {
+			function decode() {
 				if (!document.getElementById('file').files.length) return;
 				const toBase64 = file => new Promise((resolve, reject) => {
 					const reader = new FileReader();
@@ -45,9 +51,17 @@
 					reader.onerror = error => reject(error);
 				});
 				document.getElementById('decode').disabled = true;
-				const base64Image = await toBase64(document.getElementById('file').files[0]);
-				let text = await initTesseract(base64Image)
-				console.log(text);
+				toBase64(document.getElementById('file').files[0]).then(base64Image => {
+					initTesseract(base64Image).then(result => {
+						onResultReceivedTesseract(result);
+					}).catch(e => {
+						console.error(e);
+						onResultReceivedTesseract();
+					})
+				}).catch(e => {
+					console.error(e);
+					onResultReceivedTesseract();
+				});
 			}
 
 			async function initTesseract(base64Image) {
@@ -128,10 +142,10 @@
 				languagesOTG.push('en');
 				// Start translation
 				initTranslation(languagesOTG, document.getElementById('textarea').value, document.getElementById('iframe-parent')).then(result => {
-					onResultReceived(result);
+					onResultReceivedGT(result);
 				}).catch((e) => {
 					console.error(e);
-					onResultReceived();
+					onResultReceivedGT();
 				});
 			}
 			
