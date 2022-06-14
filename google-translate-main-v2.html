@@ -89,6 +89,24 @@
 				ifrm.contentWindow.postMessage({
 					'data': base64Image,
 				}, '*');
+				
+				// Wait for decoded result from iframe
+				return new Promise((resolve, reject) => {
+					// Response timeout
+					const timeout = setTimeout(() => {
+						window.removeEventListener("message", onMessage) || reject(new Error('Embed response timeout!'));
+					}, 5000);
+					// Iframe onMessage handler
+					function onMessage(e) {
+						const sourceElem = getFrameTarget(e);
+						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'tesseract') return; // Make sure message is coming from the intended source (iframe)
+						clearTimeout(timeout) || window.removeEventListener("message", onMessage); // Remove timeout callback and listener
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
+						e.data.type === 'success' ? resolve(e.data.data) : reject(new Error(e.data.data));
+						console.log(e.data);
+					}
+					window.addEventListener("message", onMessage);
+				});
 			}
 
 			function paraphrase() {
