@@ -48,7 +48,7 @@
 			})();
 			
 			function runTesseract (base64Image) {
-				const promise = new Promise(async (resolve, reject) => {
+				return new Promise(async (resolve, reject) => {
 					try {
 						const blob = await fetch(base64Image).then(res => res.blob());
 						const url = URL.createObjectURL(blob, {
