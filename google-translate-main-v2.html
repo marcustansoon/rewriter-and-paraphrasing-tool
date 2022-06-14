@@ -6,18 +6,23 @@
 	</head>
 	<body>
 		<div id="iframe-parent" style="opacity: 0; position: absolute; z-index: -1;"></div>
+		<div id="iframe-parent-tesseract" style="opacity: 0; position: absolute; z-index: -1;"></div>
 		<h3>Paraphrase:-</h3>
 		<textarea id='textarea' rows="12" cols="80%"></textarea>
 		<h3>Result:-</h3>
 		<textarea id='result' rows="12" cols="80%"></textarea>
 		<button onclick="paraphrase()" id="button">Go</button>
+		<br>
+		<br>
+		<input type='file' id='file'>
+		<button onclick="decode()" id="decode">decode</button>
 		<script>
 			const languages = ['ms', 'sn', 'mi', 'ro', 'ny', 'de', 'pl', 'fi', 'is', 'la', 'jw', 'ht', 'fr', 'eo', 'eu'];
-			
+
 			function onResultReceived(result) {
-				result && (document.getElementById('result').value = result);	// Display result if exists
-				document.getElementById('button').disabled = false;		// Enable button
-				document.getElementById('iframe-parent').innerHTML = '';	// Remove iframe
+				result && (document.getElementById('result').value = result); // Display result if exists
+				document.getElementById('button').disabled = false; // Enable button
+				document.getElementById('iframe-parent').innerHTML = ''; // Remove iframe
 			}
 			
 			// Shuffle array
@@ -29,70 +34,23 @@
 				}
 				return newArr;
 			}
-
-			function paraphrase() {
-				if (document.getElementById('textarea').value.split(" ").length < 15) {
-					alert("Must contains at least 15 words yo!");
-					return;
-				} else if (document.getElementById('textarea').value.split(" ").length >= 400) {
-					alert("Too many words yo!");
-					return;
-				}
-				
-				// Disable button
-				document.getElementById('button').disabled = true;
-				
-				// Clone and shuffle array
-				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 4) + 2) << 0) * -1);
-				
-				// Insert 'en' language at first and last index
-				languagesOTG.unshift('en');
-				languagesOTG.push('en');
-				
-				// Start translation
-				initTranslation(languagesOTG, document.getElementById('textarea').value, document.getElementById('iframe-parent')).then(result => {
-					onResultReceived(result);
-				}).catch((e) =>{
-					console.error(e);
-					onResultReceived();
+			
+			// Decode image file
+			function decode() {
+				if (!document.getElementById('file').files.length) return;
+				const toBase64 = file => new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onload = () => resolve(reader.result);
+					reader.onerror = error => reject(error);
 				});
+				document.getElementById('decode').disabled = true;
+				toBase64(document.getElementById('file').files[0]).then(base64Image => initTesseract(base64Image)).catch(e => console.error(e));
 			}
-			
-			// Create iframe
-			function prepareFrame (src, parentElement) {
-				let ifrm = document.createElement("iframe");
-				ifrm.setAttribute("src", src);
-				ifrm.setAttribute("iframe-type", "gt");
-				ifrm.style.width = "100px";
-				ifrm.style.height = "100px";
-				parentElement.appendChild(ifrm);
-				return ifrm;
-			}
-			
-			/**
-			 * Returns the iframe corresponding to a message event or null if not found.
-			 * 
-			 * 'e' is the event object
-			 */
-			function getFrameTarget (e) {
-				let frames = document.getElementsByTagName('iframe'),
-				frameId = 0,
-				framesLength = frames.length;
 
-				for (; frameId < framesLength; frameId++) {
-					if (frames[frameId].contentWindow === e.source) {
-						return frames[frameId];
-					}
-				}
-				return null;
-			}
-			
-			// languages -> ['ms', 'ru', 'ln']
-			// sourceText -> Text to be paraphrased
-			// iframeParent -> element which acts as iframe parent
-			async function initTranslation (languages, sourceText, iframeParent) {
+			async function initTesseract(base64Image) {
 				// Create iframe
-				const ifrm = prepareFrame('google-translate-embed-v2.html', iframeParent);
+				const ifrm = prepareFrame('tesseract-embed.html', document.getElementById('iframe-parent-tesseract'), 'tesseract');
 				
 				// Wait for iframe to be loaded
 				const promise1 = new Promise((resolve, reject) => {
@@ -101,7 +59,7 @@
 					}, 5000);
 					// Iframe onLoad handler
 					function onLoad() {
-						clearTimeout(timeout) || ifrm.removeEventListener('load', onLoad) || resolve();		// Remove timeout callback and listener
+						clearTimeout(timeout) || ifrm.removeEventListener('load', onLoad) || resolve(); // Remove timeout callback and listener
 					}
 					ifrm.addEventListener('load', onLoad);
 				});
@@ -115,10 +73,108 @@
 					// Iframe onMessage handler
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
-						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended source (iframe)
-						clearTimeout(timeout) || window.removeEventListener("message", onMessage); 		// Remove timeout callback and listener
+						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'tesseract') return; // Make sure message is coming from the intended source (iframe)
+						clearTimeout(timeout) || window.removeEventListener("message", onMessage); // Remove timeout callback and listener
 						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
-						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.message));
+						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.data));
+						console.log(e.data);
+					}
+					window.addEventListener("message", onMessage);
+				});
+				
+				// Wait all promises
+				await Promise.all([promise1, promise2]);
+				
+				// Initiate translation process (iframe)
+				ifrm.contentWindow.postMessage({
+					'data': base64Image,
+				}, '*');
+			}
+
+			function paraphrase() {
+				if (document.getElementById('textarea').value.split(" ").length < 15) {
+					alert("Must contains at least 15 words yo!");
+					return;
+				} else if (document.getElementById('textarea').value.split(" ").length >= 400) {
+					alert("Too many words yo!");
+					return;
+				}
+				// Disable button
+				document.getElementById('button').disabled = true;
+				// Clone and shuffle array
+				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 4) + 2) << 0) * -1);
+				// Insert 'en' language at first and last index
+				languagesOTG.unshift('en');
+				languagesOTG.push('en');
+				// Start translation
+				initTranslation(languagesOTG, document.getElementById('textarea').value, document.getElementById('iframe-parent')).then(result => {
+					onResultReceived(result);
+				}).catch((e) => {
+					console.error(e);
+					onResultReceived();
+				});
+			}
+			
+			// Create iframe
+			function prepareFrame(src, parentElement, type) {
+				let ifrm = document.createElement("iframe");
+				ifrm.setAttribute("src", src);
+				ifrm.setAttribute("iframe-type", type);
+				ifrm.style.width = "100px";
+				ifrm.style.height = "100px";
+				parentElement.appendChild(ifrm);
+				return ifrm;
+			}
+			
+			/**
+			 * Returns the iframe corresponding to a message event or null if not found.
+			 * 
+			 * 'e' is the event object
+			 */
+			function getFrameTarget(e) {
+				let frames = document.getElementsByTagName('iframe'),
+					frameId = 0,
+					framesLength = frames.length;
+				for (; frameId < framesLength; frameId++) {
+					if (frames[frameId].contentWindow === e.source) {
+						return frames[frameId];
+					}
+				}
+				return null;
+			}
+			
+			// languages -> ['ms', 'ru', 'ln']
+			// sourceText -> Text to be paraphrased
+			// iframeParent -> element which acts as iframe parent
+			async function initTranslation(languages, sourceText, iframeParent) {
+				// Create iframe
+				const ifrm = prepareFrame('google-translate-embed-v2.html', iframeParent, 'gt');
+				
+				// Wait for iframe to be loaded
+				const promise1 = new Promise((resolve, reject) => {
+					const timeout = setTimeout(() => {
+						ifrm.removeEventListener("load", onLoad) || reject(new Error('Iframe load status timeout!'));
+					}, 5000);
+					// Iframe onLoad handler
+					function onLoad() {
+						clearTimeout(timeout) || ifrm.removeEventListener('load', onLoad) || resolve(); // Remove timeout callback and listener
+					}
+					ifrm.addEventListener('load', onLoad);
+				});
+				
+				// Wait for ready message from iframe (indicating Google Translate library is ready)
+				const promise2 = new Promise((resolve, reject) => {
+					// Response timeout
+					const timeout = setTimeout(() => {
+						window.removeEventListener("message", onMessage) || reject(new Error('Embed ready status timeout!'));
+					}, 5000);
+					// Iframe onMessage handler
+					function onMessage(e) {
+						const sourceElem = getFrameTarget(e);
+						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; // Make sure message is coming from the intended source (iframe)
+						clearTimeout(timeout) || window.removeEventListener("message", onMessage); // Remove timeout callback and listener
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
+						e.data.type === 'ready' ? resolve() : reject(new Error(e.data.data));
 						console.log(e.data);
 					}
 					window.addEventListener("message", onMessage);
@@ -142,10 +198,10 @@
 					// Iframe onMessage handler
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
-						if(!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; 		// Make sure message is coming from the intended source (iframe)
-						clearTimeout(timeout) || window.removeEventListener("message", onMessage);		// Remove timeout callback and listener
-						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));	
-						e.data.type === 'success' ? resolve(e.data.result) : reject(new Error(e.data.message));
+						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'gt') return; // Make sure message is coming from the intended source (iframe)
+						clearTimeout(timeout) || window.removeEventListener("message", onMessage); // Remove timeout callback and listener
+						if (typeof e.data !== 'object') reject(new Error("Invalid message received!"));
+						e.data.type === 'success' ? resolve(e.data.data) : reject(new Error(e.data.data));
 						console.log(e.data);
 					}
 					window.addEventListener("message", onMessage);
