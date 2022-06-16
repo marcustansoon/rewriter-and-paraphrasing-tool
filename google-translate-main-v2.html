@@ -254,7 +254,7 @@
 			document.getElementById('file').onchange = function(e){alert(document.getElementById('file').value)}
 			function openCamera() {
 				if(window['webkit']){
-					window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'type': 'open-camera'}));
+					window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'type': 'openCamera'}));
 					return;
 				}
 				console.log('open user cam');
