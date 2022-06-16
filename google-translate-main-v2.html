@@ -123,7 +123,7 @@
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
 						if (e && e.data && e.data.type === 'progress') {
-							document.getElementById('progress').innerHTML = e.data.data;
+							document.getElementById('progress').innerHTML = e.data.data.progress;
 							return;
 						}
 						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'tesseract') return; // Make sure message is coming from the intended source (iframe)
