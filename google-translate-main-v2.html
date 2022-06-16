@@ -5,6 +5,11 @@
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
 	</head>
 	<body>
+		<img src="" id="img">
+		<button onclick="openCamera()">open camera</button>
+		
+		
+		
 		<div id="iframe-parent" style="opacity: 0; position: absolute; z-index: -1;"></div>
 		<div id="iframe-parent-tesseract" style="opacity: 0; position: absolute; z-index: -1;"></div>
 		<h3>Paraphrase:-</h3>
@@ -242,6 +247,25 @@
 					}
 					window.addEventListener("message", onMessage);
 				});
+			}
+			
+			
+			
+			document.getElementById('file').onchange = function(e){alert(document.getElementById('file').value)}
+			function openCamera() {
+				if(window['webkit']){
+					window['webkit'].messageHandlers['cordova_iab'].postMessage(JSON.stringify({'type': 'open-camera'}));
+					return;
+				}
+				console.log('open user cam');
+				if(navigator.userAgent.toLowerCase().indexOf("android") > -1){
+					//window.location.href = 'com.neudimenxion.joinnow';
+					//setTimeout('');
+					//window.location.href = 'https://play.google.com/store/apps/details?id=com.neudimenxion.joinnow';
+				}
+				if(navigator.userAgent.toLowerCase().indexOf("iphone") > -1){
+					//location.replace("https://apps.apple.com/app/id1535415885");
+				}
 			}
 		</script>
 	</body>
