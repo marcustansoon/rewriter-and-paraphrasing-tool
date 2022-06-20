@@ -14,7 +14,7 @@
 				try {
 					if (!e || !e.data) throw 'Invalid message received!';
 				} catch (e) {
-					alert(e);
+					console.error(e);
 					return;
 				}
 				//console.log('Received');
