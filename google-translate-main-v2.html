@@ -12,6 +12,8 @@
 		
 		<div id="iframe-parent" style="opacity: 0; position: absolute; z-index: -1;"></div>
 		<div id="iframe-parent-tesseract" style="opacity: 0; position: absolute; z-index: -1;"></div>
+		<img id="image">
+		
 		<h3>Paraphrase:-</h3>
 		<textarea id='textarea' rows="12" cols="80%"></textarea>
 		<h3>Result:-</h3>
@@ -72,6 +74,8 @@
 			}
 
 			async function initTesseract(base64Image) {
+				document.getElementById('image').src = base64Image;
+				
 				// Create iframe
 				const ifrm = prepareFrame('tesseract-embed.html', document.getElementById('iframe-parent-tesseract'), 'tesseract');
 				
