@@ -277,6 +277,8 @@
 			
 			//Listen for the event
 			window.addEventListener("base64image", function(e) {
+				alert(typeof e.detail)
+				alert(e.detail)
 				const imageData = new ImageData(Uint8ClampedArray.from(e.detail.uint8.split(',')), e.detail.width, e.detail.height);
 				//alert(e.detail.base64image);
 				document.getElementById('decode').disabled = true;
