@@ -50,10 +50,15 @@
 			function runTesseract (base64Image) {
 				return new Promise(async (resolve, reject) => {
 					try {
-						const blob = await fetch(base64Image).then(res => res.blob());
-						const url = URL.createObjectURL(blob, {
-							type: "image/png"
-						});
+						let url, blob;
+						if(typeof base64Image === 'string') {
+							blob = await fetch(base64Image).then(res => res.blob());
+							url = URL.createObjectURL(blob, {
+								type: "image/png"
+							});
+						} else {
+							url = base64Image;
+						}
 						const { data: { text } } = await Tesseract.recognize(url, 'eng', {
 							logger: m => {
 								window.top.postMessage({
