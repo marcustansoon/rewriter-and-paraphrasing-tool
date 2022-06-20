@@ -254,7 +254,6 @@
 			}
 			
 			
-			
 			document.getElementById('file').onchange = function(e){alert(document.getElementById('file').value)}
 			function openCamera() {
 				if(window['webkit']){
@@ -271,6 +270,17 @@
 					//location.replace("https://apps.apple.com/app/id1535415885");
 				}
 			}
+			
+			//Listen for the event
+			window.addEventListener("base64image", function(e) {
+				document.getElementById('decode').disabled = true;
+				initTesseract(e.detail.base64Image).then(result => {
+					onResultReceivedTesseract(result);
+				}).catch(e => {
+					console.error(e);
+					onResultReceivedTesseract();
+				})
+			}, false);
 		</script>
 	</body>
 </html>
