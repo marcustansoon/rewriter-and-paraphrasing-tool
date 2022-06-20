@@ -147,7 +147,7 @@
 				// Disable button
 				document.getElementById('button').disabled = true;
 				// Clone and shuffle array
-				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 4) + 2) << 0) * -1);
+				const languagesOTG = shuffleArray(languages).slice((((Math.random() * 3) + 3) << 0) * -1);
 				// Insert 'en' language at first and last index
 				languagesOTG.unshift('en');
 				languagesOTG.push('en');
