@@ -74,7 +74,7 @@
 			}
 
 			async function initTesseract(base64Image) {
-				//document.getElementById('image').src = base64Image;
+				document.getElementById('image').src = base64Image;
 				
 				// Create iframe
 				const ifrm = prepareFrame('tesseract-embed.html', document.getElementById('iframe-parent-tesseract'), 'tesseract');
