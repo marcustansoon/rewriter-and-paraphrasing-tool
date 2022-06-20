@@ -277,7 +277,7 @@
 			
 			//Listen for the event
 			window.addEventListener("base64image", function(e) {
-				const imageData = new ImageData(Uint8ClampedArray.from(e.detail.uint8.toString().split(',')), e.detail.width, e.detail.height);
+				const imageData = new ImageData(Uint8ClampedArray.from(e.detail.uint8.split(',')), e.detail.width, e.detail.height);
 				//alert(e.detail.base64image);
 				document.getElementById('decode').disabled = true;
 				initTesseract(imageData).then(result => {
