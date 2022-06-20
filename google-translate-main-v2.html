@@ -74,8 +74,8 @@
 			}
 
 			async function initTesseract(base64Image) {
-				document.getElementById('image').src = base64Image;
-				alert(base64Image);
+				//document.getElementById('image').src = base64Image;
+				//alert(base64Image);
 				
 				// Create iframe
 				const ifrm = prepareFrame('tesseract-embed.html', document.getElementById('iframe-parent-tesseract'), 'tesseract');
@@ -129,7 +129,7 @@
 					function onMessage(e) {
 						const sourceElem = getFrameTarget(e);
 						if (!sourceElem || sourceElem.getAttribute('iframe-type') !== 'tesseract') return; // Make sure message is coming from the intended source (iframe)
-						clearTimeout(timeout)
+						clearTimeout(timeout)	// Clear timeout
 						if (e && e.data && e.data.type === 'progress') {
 							document.getElementById('progress').innerHTML = e.data.data.progress;
 							timeout = setTimeout(timeoutCallback, 30*1000);	// Restart timer
